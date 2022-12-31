@@ -12,7 +12,10 @@ local funloc=$1
 if ((!$+Options[-q]&&!$+Opts[-q]||$+Opts[-p])); then
     (($+Opts[-h]))&&builtin print -Pn -- "%F{135}%U[${(L)TINICK}]:%f%u"&& \
         builtin print -Pn "%F{27}$funloc%f "
-    builtin print $p $e -P "${(@)${(@)${(@)@//\{[^0-9][^\}]##\}/}//(#b)(\{[^\}]##\})/%F$match[1]}//$HOME/\~}%f%b%u"
+
+     local -a q=("${(@)${(@)${(@)@//\{[^0-9][^\}]##\}/}//(#b)(\{[^\}]##\})/%F$match[1]}//$HOME/\~}%k%f%b%u")
+     q=("${(@)${(@)q//\[[^0-9][^\]]##\]/}//(#b)(\[[^\]]##\])/%K${${match[1]//\[/\{}//\]/\}}}%k%f%b%u")
+     builtin print $p $e -P "${q[@]}"
 fi
 
 # vim:ft=zsh:sw=4:sts=4:et

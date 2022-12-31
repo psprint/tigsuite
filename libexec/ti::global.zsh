@@ -10,7 +10,14 @@
 
 0=${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}
 0=${${(M)0##/*}:-$PWD/$0}
+
+# Set the base and typically useful options
+builtin emulate -L zsh
+builtin setopt extendedglob warncreateglobal typesetsilent noshortloops \
+    noautopushd promptsubst
+
 export TINICK=TigSuite
+typeset -gA Plugins
 
 # FUNCTION: timsg [[[
 # An wrapping function that looks for backend outputting function
@@ -27,15 +34,13 @@ export TINICK=TigSuite
         builtin print -- ${@${@//(%f|%B|%F|%f)/}//\{[^\}]##\}/}
     fi
 }
-
 alias timsg='noglob timsg_ $0:t\:$LINENO'
-
 # ]]]
 
 # Run as script? ZSH_SCRIPT is a Zsh 5.3 addition
-if [[ $0 != */ti::global.zsh ]]; then
+if [[ $0 != */ti::global.zsh || ! -f $0 ]]; then
      if [[ -f $0:h/ti::global.zsh ]]; then
-        $Plugins[TIG_DIR]=$0:h:h
+        Plugins[TIG_DIR]=$0:h:h
         TIG_SUITE_DIR=$Plugins[TIG_DIR]
     elif [[ -f $TIG_SUITE_DIR/libexec/ti::global.zsh ]]; then
         0=$TIG_SUITE_DIR/libexec/ti::global.zsh
@@ -50,20 +55,19 @@ if [[ $0 != */ti::global.zsh ]]; then
             continue.
         return 1
     fi
+else
+    Plugins[TIG_DIR]=$0:h:h
+    TIG_SUITE_DIR=$Plugins[TIG_DIR]
 fi
-
-# Set the base and typically useful options
-builtin emulate -L zsh
-builtin setopt extendedglob warncreateglobal typesetsilent noshortloops \
-    noautopushd promptsubst
 
 # Shorthand vars
 local TIG=$0:h:h
 
 # Such global variable is expected to be typeset'd -g in the plugin.zsh
 # file. Here it's restored in case of the the file being sourced as a script.
-typeset -gA Plugins
 Plugins[TIG_DIR]=$TIG
+local -a reply match mbegin mend
+local REPLY MATCH; integer MBEGIN MEND
 
 # In case of the script using other scripts from the plugin, either set up
 # $fpath and autoload, or add the directory to $PATH.
@@ -73,41 +77,48 @@ fpath+=( $TIG/{libexec,functions} )
 path+=( $TIG/{libexec,functions} )
 
 # Modules
-zmodload zsh/parameter zsh/datetime zsh/stat
+zmodload zsh/parameter zsh/datetime
 
-export TICONFIG=${${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/${(L)TINICK}}:-$HOME/.config/${(L)TINICK}}/features.conf
-export TILOG=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/${(L)TINICK}}:-$HOME/.cache/${(L)TINICK}}/${(L)TINICK}.log
-command mkdir -p $TICONFIG:h $TILOG:h
+# Right customizable ~/.config/… and ~/.cache/… file paths
+: ${TICONFIG:=${${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/${(L)TINICK}}:-$HOME/.config/${(L)TINICK}}/features.conf}
+: ${TILOG:=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/${(L)TINICK}}:-$HOME/.cache/${(L)TINICK}}/${(L)TINICK}.log}
+: ${TICACHE:=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/${(L)TINICK}}:-$HOME/.cache/${(L)TINICK}}}
+export TICONFIG=${~TICONFIG} TILOG=${~TILOG} TICACHE=${~TICACHE}
+command mkdir -p $TICONFIG:h $TILOG:h $TICACHE
+typeset -g QCONF=${TICONFIG//(#s)$HOME/\~}
  
+# No config dir found ?
 if [[ ! -d $TICONFIG:h ]]; then
     timsg -h {204}Error:%f Couldn\'t setup config directory \
-                    at %B%F{39}$TICONFIG:h%b%f, cannot continue…
-    return 3
+                    at %B%F{39}$QCONF:h%b%f, cannot continue…
+    return 1
 fi
 
+# No config ?
 if [[ ! -f $TICONFIG ]]; then
     command touch $TICONFIG
     [[ ! -f $TICONFIG ]]&&{timsg -h %U{204}Error:%f couldn\'t create \
-                the record-file %B{39}$TICONFIG%f%b, please addapt \
+                the record-file %B{39}$QCONF%f%b, please addapt \
                 file permissions or check if disk is full.
                 return 4}
 fi
+# Config empty?
 [[ ! -s $TICONFIG ]]&&timsg -h %U{204}Warning:%f features record-file \
-                    \({41}$TICONFIG%F\) currently empty, need to \
+                    \({41}$QCONF%F\) currently empty, need to \
                     add some entries
 
+# Autoload functions
+autoload -z regexp-replace $TIG/functions/(xzmsg|ti::)*~*'~'(#qN.non:t)
+
  # Snippets with code
-for q in $TIG/libexec/ti::*.zsh~*/ti::global.zsh; do
+for q in $TIG/libexec/ti::*.zsh~*/ti::global.zsh(N.); do
     builtin source $q
     integer ret=$?
     if ((ret));then
         timsg -h %U{204}Error:%f error %B{174}$ret%f%b when sourcing \
-            sub-file: {39}$q%f…
+            sub-file: {39}$q:t%f…
         return 1
     fi
 done
-
-# Autoload functions
-autoload -z $TIG/functions/(xzmsg|ti::)*~*~(:tN.)
 
 # vim: ft=zsh sw=2 ts=2 et foldmarker=[[[,]]] foldmethod=marker
