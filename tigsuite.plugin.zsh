@@ -23,8 +23,7 @@ Plugins[TIG_DIR]="$0:h"
     # Standard hash for plugins, to not pollute the namespace
     export TIG_SUITE_DIR=$Plugins[TIG_DIR] \
         TIG_SUITE_GL=$Plugins[TIG_DIR]/libexec/ti::global.zsh
-    autoload -Uz $TIG_SUITE_DIR/functions/ti(::|)*~*~(:tN.)
-    ti::new-feature 1 q
+    autoload -Uz $TIG_SUITE_DIR/functions/(ti::|xzmsg)*~*~(:tN.)
  }
 
 # vim:ft=zsh:tw=80:sw=4:sts=4:et:foldmarker=[[[,]]]

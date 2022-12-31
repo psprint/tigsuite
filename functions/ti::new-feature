@@ -65,7 +65,7 @@ if ((ret==0));then
     timsg \\nFeature %B{41}$ID%f%b succesfully \
         ${${${update:#0}:+updated}:-created} and saved \
         \(to: {39}$QCONF%f\). \\nIt contains files: \\n- \
-            \{39}${(j:%f,\\n- {39}:)Q}
+            \{39}${(j:%f,\n- {39}:)Q}%f.
 else
     timsg -h %U{204}Warning:%f%b error %B{174}$ret%f%b occured \
         when writing to disk, feature %B{41}$ID%f%b could be not saved

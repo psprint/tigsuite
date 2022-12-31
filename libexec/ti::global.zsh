@@ -34,7 +34,10 @@ alias timsg='noglob timsg_ $0:t\:$LINENO'
 
 # Run as script? ZSH_SCRIPT is a Zsh 5.3 addition
 if [[ $0 != */ti::global.zsh ]]; then
-    if [[ -f $TIG_SUITE_DIR/libexec/ti::global.zsh ]]; then
+     if [[ -f $0:h/ti::global.zsh ]]; then
+        $Plugins[TIG_DIR]=$0:h:h
+        TIG_SUITE_DIR=$Plugins[TIG_DIR]
+    elif [[ -f $TIG_SUITE_DIR/libexec/ti::global.zsh ]]; then
         0=$TIG_SUITE_DIR/libexec/ti::global.zsh
         Plugins[TIG_DIR]=$TIG_SUITE_DIR
     elif [[ -f $Plugins[TIG_DIR]/libexec/ti::global.zsh ]]; then
