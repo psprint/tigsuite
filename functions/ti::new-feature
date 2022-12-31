@@ -2,27 +2,50 @@
 
 0=${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}
 0=${${(M)0##/*}:-$PWD/$0}
-: ${TIG_SUITE_DIR:=$0:h:h}
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 # Input/options
 local -A Opts
 builtin zparseopts -D -E -A Opts -- || return 1
 local QCONF=${TICONFIG//(#s)$HOME/\~} ID=$1 CID=$2 
 shift 2
+{ local -a Q=( ${(@0)"$(git diff -z --name-only $CID~..$CID)"} );} TIO
+
+ti::util-get-prj-dir||return 1
+local PID=$REPLY:t:r PDIR=$REPLY
+local ctxt="NO ACTIVE COMMIT IN {204}TIG"
+timsg %B%U{135}STARTING OPERATION: {41}CREATE NEW °{69}FEATURE{41}° \
+    FROM-COMMIT{135}\\n…Copy of files from picked up commit into the \
+{41}registry-file{135} under the new entry name \\n(received from you: \
+{208}«{41}%U${ID}%u{208}»{135}) creating a new, handy {27}%U°feature°%u{135} \
+allowing to open its all\\nkept files in {137}\$EDITOR{135} from {69}\
+tig{135} interface and {41}tigsu{135} command-line program.\\n\
+{204}Initial status{135} of the operation:
+
+timsg %B{135}· Project dir: %U{39}$PDIR%u{135}\\n\
+· Registry file location: {69}$QCONF{135}\\n\
+· The name of the °{41}feature{135}° given: «{227}[27]${ID}{135}%k»\\n\
+· {41}PID{135} – project-id/tag: «{227}[27]${(U)PID}{135}%k»\\n\
+· %B{204}TIG{135} interface highlighted {39}commit{135} – to get its files: \
+    %U{76}${${${CID[1,7]:-$ctxt}:#0##}:-$ctxt}{135}\\n\
+· File(s) to add to feature «{227}[27]${(U)ID}{135}%k»:\
+  ${${Q:+{39}·${(~j.{135}, {39}·.)Q}{135}\\n}:-\
+%B{204}Error:{135} no \
+files found in picked commit, nothing to do, {204}exiting{135}…}
 
 if [[ ! -d $TIG_SUITE_DIR ]];then
-    timsg -h %U{204}Error:%f cannot find $TINICK source directory, wrong \
+    timsg -h %U{204}Error:%f cannot find $TINICKQ source directory, wrong \
         or empty {39}\$TIG_SUITE_DIR%f \(=={41}${TIG_SUITE_DIR:-(NULL)}%f\)
     return 1
 fi
 
 if [[ $CID == 0# ]];then
-    timsg -h %U{204}Error:%f No commit selected, exiting…
+    timsg -h %U{204}Error:%f No commit highlighted in {204}TIG%f interface, \
+        exiting…
     return 1
 fi
 
-local -a Q=( ${(@0)"$(git diff -z --name-only $CID~..$CID)"} ) \
-    cont=(${(@f)"$(<$TICONFIG)"})
+local -a cont=(${(@f)"$(<$TICONFIG)"})
 local -a prev=(${(M)cont:#(#s)$ID: *}) filtered=(${cont:#(#s)$ID: *})
 integer ret update
 
@@ -35,14 +58,14 @@ fi
 if (($#prev>=1)); then
         timsg -h %B{204}Warning:%f%b the given new \
             °{27}feature-ID%f°=\"%B{39}${(U)ID}%f%b\" \
-            already exists in repository: \
+            already exists in registry-file: \
             %B{41}$QCONF%f%b… %B\\n\\nUpdate it? {204}[Yy/Nn]?
         if read -q -E -e; then
             update=1
             timsg \\n%B{41}Waiting {39}3{41} seconds to stop the edition \
                 {204}(Ctrl-C){41}…
             sleep 3
-            command mv -f $TICONFIG $TICONFIG\~ &>$TILOG
+            command mv -f $TICONFIG $TICONFIG\~ TIO
             ret+=$?
             if [[ -n $filtered ]]; then
                 builtin print -l -- $filtered>>!$TICONFIG
