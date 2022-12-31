@@ -1,0 +1,72 @@
+#!/usr/bin/env zsh
+
+0=${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}
+0=${${(M)0##/*}:-$PWD/$0}
+: ${TIG_SUITE_DIR:=$0:h:h}
+
+# Input/options
+local -A Opts
+builtin zparseopts -D -E -A Opts -- || return 1
+local QCONF=${TICONFIG//(#s)$HOME/\~} ID=$1 CID=$2 
+shift 2
+
+if [[ ! -d $TIG_SUITE_DIR ]];then
+    timsg -h %U{204}Error:%f cannot find $TINICK source directory, wrong \
+        or empty {39}\$TIG_SUITE_DIR%f \(=={41}${TIG_SUITE_DIR:-(NULL)}%f\)
+    return 1
+fi
+
+if [[ $CID == 0# ]];then
+    timsg -h %U{204}Error:%f No commit selected, exiting…
+    return 1
+fi
+
+local -a Q=( ${(@0)"$(git diff -z --name-only $CID~..$CID)"} ) \
+    cont=(${(@f)"$(<$TICONFIG)"})
+local -a prev=(${(M)cont:#(#s)$ID: *}) filtered=(${cont:#(#s)$ID: *})
+integer ret update
+
+: ${Q:?Error: No files in the selected Git object}
+
+if (($#ID<3));then 
+    timsg -h %U{204}Error:%f Too short feature name given, must be of len \>\=3
+    return 1
+fi
+if (($#prev>=1)); then
+        timsg -h %B{204}Warning:%f%b the given new \
+            °{27}feature-ID%f°=\"%B{39}${(U)ID}%f%b\" \
+            already exists in repository: \
+            %B{41}$QCONF%f%b… %B\\n\\nUpdate it? {204}[Yy/Nn]?
+        if read -q -E -e; then
+            update=1
+            timsg \\n%B{41}Waiting {39}3{41} seconds to stop the edition \
+                {204}(Ctrl-C){41}…
+            sleep 3
+            command mv -f $TICONFIG $TICONFIG\~ &>$TILOG
+            ret+=$?
+            if [[ -n $filtered ]]; then
+                builtin print -l -- $filtered>>!$TICONFIG
+                ret+=$?
+            fi
+        else
+            timsg \\n{204}Warning:%f exiting doing nothing…
+            exit 1
+        fi
+fi
+
+#
+# Save feature $ID with files $Q
+#
+
+repeat 1 { builtin print -r -- "$ID:" "${(qqq@)Q}">>!$TICONFIG; }
+ret+=$?
+
+if ((ret==0));then
+    timsg \\nFeature %B{41}$ID%f%b succesfully \
+        ${${${update:#0}:+updated}:-created} and saved \
+        \(to: {39}$QCONF%f\). \\nIt contains files: \\n- \
+            \{39}${(j:%f,\\n- {39}:)Q}
+else
+    timsg -h %U{204}Warning:%f%b error %B{174}$ret%f%b occured \
+        when writing to disk, feature %B{41}$ID%f%b could be not saved
+fi

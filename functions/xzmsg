@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+builtin emulate -L zsh -o extendedglob
+
+local -A Opts
+builtin zparseopts -D -E -A Opts -- \
+        p e q h || return 7
+local funloc=$1
+[[ $funloc == ?*:<-> ]] && shift || funloc=
+
+# Allow but strip non-number format codes, for future expansions
+(($+Opts[-e]))&&local e=-u2
+if ((!$+Options[-q]&&!$+Opts[-q]||$+Opts[-p])); then
+    (($+Opts[-h]))&&builtin print -Pn -- "%F{135}%U[${(L)TINICK}]:%f%u"&& \
+        builtin print -Pn "%F{27}$funloc%f "
+    builtin print $p $e -P "${(@)${(@)${(@)@//\{[^0-9][^\}]##\}/}//(#b)(\{[^\}]##\})/%F$match[1]}//$HOME/\~}%f%b%u"
+fi
+
+# vim:ft=zsh:sw=4:sts=4:et
