@@ -20,7 +20,6 @@ builtin setopt extendedglob warncreateglobal typesetsilent noshortloops \
     noautopushd promptsubst
 
 export TINICK=TigSuite TINICKSMALL=TigSu
-export TINICKQ=%B{204}$TINICK
 typeset -gA Plugins
 
 # FUNCTION: timsg [[[

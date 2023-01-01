@@ -49,7 +49,7 @@ timsg %B{204}Initial status{135} of the operation:\\n\
 [[ -n $ID ]]&&timsg %B{135}· The name of the °{41}feature{135}° given: «[227]{27}${ID}{135}%k»
 
 # TIG_SUITE_DIR, PID
-timsg %B{135}· $TINICKQ{135} source directory path: {69}$TIG_SUITE_DIR{135}\\n\
+timsg %B{135}· %B{204}$TINICK{135} source directory path: {69}$TIG_SUITE_DIR{135}\\n\
 · {41}PID{135} – project-id/tag: «[227]{27}${(U)PID}{135}%k»
 
 # FILES ↔ COMMIT
