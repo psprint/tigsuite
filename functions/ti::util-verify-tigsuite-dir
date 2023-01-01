@@ -1,10 +1,9 @@
 #!/usr/bin/env zsh
-0=${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}
-0=${${(M)0##/*}:-$PWD/$0}
+0=${(%):-%x}
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
-if [[ ! -d $TIG_SUITE_DIR ]];then
-    timsg -h %U{204}Error:%f cannot find %B{204}$TINICK%f source directory, wrong \
-        or empty {39}\$TIG_SUITE_DIR%f \(=={41}${TIG_SUITE_DIR:-(NULL)}%f\)
+if [[ ! -d $TIG_SUITE_DIR || ! -f $0 ]];then
+    timsg -h %U{204}Error:%f cannot find %B{204}$TINICK%f%b source directory, \
+    wrong or empty {39}\$TIG_SUITE_DIR%f \(=={41}${TIG_SUITE_DIR:-(NULL)}%f\)
     return 1
 fi

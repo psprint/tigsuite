@@ -11,7 +11,7 @@
 #
 # All parameters passed to the script will be forwarded to 'tig'.
 #
-
+0=${(%):-%x}
 
 set -e
 
@@ -19,9 +19,9 @@ CONFIG=$(mktemp)
 trap "rm -f '$CONFIG'" EXIT
 
 # Prepare config file: source user config, if present
-if [ ! -z "$TIGRC_USER" ]; then
+if [[ -n $TIGRC_USER ]]; then
 	print "source $TIGRC_USER" >>! "$CONFIG"
-elif [ -f "$HOME/.tigrc" ]; then
+elif [[ -f $HOME/.tigrc ]]; then
 	print "source $HOME/.tigrc" >>! "$CONFIG"
 fi
 

@@ -1,7 +1,5 @@
 #!/usr/bin/env zsh
-
-0=${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}
-0=${${(M)0##/*}:-$PWD/$0}
+0=${(%):-%x}
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 # Input/options

@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+0=${(%):-%x}
 builtin emulate -L zsh -o extendedglob
 
 local -A Opts

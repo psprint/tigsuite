@@ -1,13 +1,12 @@
 #!/usr/bin/env zsh
 #
 # Copyright (c) 2022 Sebastian Gniazdowski
-
-0=${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}
-0=${${(M)0##/*}:-$PWD/$0}
+#
+0=${(%):-%x}
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 # Run as script? ZSH_SCRIPT is a Zsh 5.3 addition
-if [[ $0 != */ti::global.zsh || ! -f $0 ]]; then
+if [[ $0 != */ti::util-get-tigsuite-sir || ! -f $0 ]]; then
      if [[ -f $0:h/ti::global.zsh ]]; then
         $Plugins[TIG_DIR]=$0:h:h
         TIG_SUITE_DIR=$Plugins[TIG_DIR]

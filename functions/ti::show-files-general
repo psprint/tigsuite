@@ -1,0 +1,24 @@
+#!/usr/bin/env zsh
+# -*- mode: sh; sh-indentation: 4; indent-tabs-mode: nil; sh-basic-offset: 4; -*# Copyright (c) 2022 Sebastian Gniazdowski
+0=${(%):-%x}
+
+local which=$1 met=$3 obj=$2
+
+if [[ $which == queue ]];then
+    if [[ ! -s $TIPID_QUEUE ]];then
+        timsg -h %B{204}Notice:%f%b queue is empty, nothing to display…
+        return 1
+    fi
+    {
+        print ${(r:COLUMNS::—:):-—}
+        print Showing files gathered for current PWD project \
+            \($PID\) in the queue file:\\n·$TIPID_QUEUE
+        print To convert it into a °feature° object press Fnq \
+            in TIG interface
+        print ${(r:COLUMNS::—:):-—}
+        print Files in the accumulator/queue-file:\\n
+        cat $TIPID_QUEUE|sed -r -e 's/^/·/'
+     }|tig
+fi
+ 
+ # vim:ft=zsh:tw=80:sw=4:sts=4:et:foldmarker=[[[,]]]

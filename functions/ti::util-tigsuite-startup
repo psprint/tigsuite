@@ -1,6 +1,5 @@
 #!/usr/bin/env zsh
-0=${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}
-0=${${(M)0##/*}:-$PWD/$0}
+0=${(%):-%x}
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 # Uses $ID, $PID, $PDIR, $TIPID_QUEUE
@@ -11,7 +10,7 @@ local ctxt="NO COMMIT WAS HIGHLIGHTED IN %B{204}TIG-interface"
 if [[ $1 == open ]];then
 
 timsg %B%U{135}STARTING OPERATION: {41}OPENING {174}\$EDITOR{41} ON FILES \
-    FROM A °{69}FEATURE{41}° ${TIFZF_BIN:+BY SELECTING IT BY A CHOOSER APP \
+    FROM A °{69}FEATURE{41}° ${TIFZF_BIN:+BY SELECTING IT BY A TUI CHOOSER APP \
 WHICH IS: {204}$TIFZF_BIN}
     
 
@@ -65,8 +64,7 @@ timsg %B{135}· %B{204}$TINICK{135} source directory path: {69}$TIG_SUITE_DIR{13
 
 # FILES ↔ COMMIT
 if [[ $1 = from-commit ]];then
-    timsg %B{135}· %B{204}TIG{135} interface highlighted {39}commit{135} \
-        (fetch changed files): \
+    timsg %B{135}· %B{204}TIG{135} interface highlighted {39}commit{135}: \
             %U{76}${${${CID[1,7]:-$ctxt}:#0##}:-$ctxt}
     [[ $3 == commit ]]&&local pre="Files from the highlighted"\
 " commit: {39}$CID[1,7]{135}"
@@ -91,5 +89,5 @@ interface{135}, nothing to do, {204}exiting{135}…)
 fi
 
 # Chooser program
-timsg %B{135}· Chooser app to pick °{27}features{135}° to open them: \
-    %U{204}$TIFZF_BIN
+timsg %B{135}· Chooser {137}TUI{135} app to pick °{27}features{135}° to \
+    open them: %U{204}${TIFZF_BIN:-(none)}
