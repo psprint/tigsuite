@@ -1,0 +1,60 @@
+#!/usr/bin/env zsh
+
+0=${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}
+0=${${(M)0##/*}:-$PWD/$0}
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+
+# Input/options
+local -A Opts
+builtin zparseopts -D -E -A Opts -- || return 1
+local GOF=$1 CID=$2
+
+# Initialize
+ti::util-verify-tigsuite-dir||return 1
+ti::util-tigsuite-startup queue-append GOF||return 1
+
+[[ -z $GOF ]] && return 1
+
+#print $TIPID_QUEUE e:${PDIR}
+[[ ! -f $TIPID_QUEUE ]]&&command touch $TIPID_QUEUE TIO
+local -a cont=(${(@f)"$(<$TIPID_QUEUE)"})
+local -a prev=(${(M)cont:#(#s)$GOF}) filtered=(${cont:#(#s)$GOF})
+integer ret update
+
+if (($#prev>0)); then
+         timsg -h %B{204}Warning:%f%b the selected new \
+            °{27}file%f°=\"%B{39}\*/$GOF:t%f%b\" \
+            is already added to %B{204}$TIPID_QUEUE%f%b accumulator-file\
+            %B\\n\\nAppend anyway? Duplicates will be removed {204}(Yy/Nn)?
+        if read -q -E -e; then
+            update=1
+            timsg \\n%B{41}Waiting {39}3{41} seconds to stop the operation \
+                {204}(Ctrl-C){41}…
+            sleep 3
+            command mv -f $TIPID_QUEUE $TIPID_QUEUE\~ TIO
+            ret+=$?
+            if [[ -n $filtered ]]; then
+                builtin print -l -- $filtered>>!$TIPID_QUEUE
+                ret+=$?
+            fi
+        else
+            timsg \\n{204}Warning:%f exiting doing nothing…
+            exit 18
+        fi
+fi
+#
+# Save feature $ID with files $Q
+#
+
+repeat 1 { builtin print -r -- "$GOF">>!$TIPID_QUEUE; }
+ret+=$?
+
+if ((ret==0));then
+    timsg \\nFile %B{41}$GOF%f%b succesfully \
+        ${${${update:#0}:+moved to bottom of queue}:-added to queue} \
+        and saved \(to: {39}$TIPID_QUEUE%f\). \\nIt contains files: \\n- \
+            \{39}${(j:%f,\n- {39}:):-${(f@)"$(<$TIPID_QUEUE)"}}%f.
+else
+    timsg -h %U{204}Warning:%f%b error %B{174}$ret%f%b occured \
+        when writing to disk, file %B{41}${GOF:-(null)}%f%b could be not saved
+fi

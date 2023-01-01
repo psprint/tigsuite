@@ -78,42 +78,53 @@ local REPLY MATCH; integer MBEGIN MEND
 fpath+=( $TIG/{libexec,functions} )
 
 # OR
-path+=( $TIG/{libexec,functions} )
+path+=( $TIG/{bin,libexec,functions} )
 
 # Modules
 zmodload zsh/parameter zsh/datetime
 
-# Right customizable ~/.config/… and ~/.cache/… file paths
-: ${TICONFIG:=${${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/${(L)TINICK}}:-$HOME/.config/${(L)TINICK}}/features.reg}
+export TIREGI_FILE TILOG TICACHE TIFZF_BIN
+
+ # Right customizable ~/.config/… and ~/.cache/… file paths
+: ${TIREGI_FILE:=${${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/${(L)TINICK}}:-$HOME/.config/${(L)TINICK}}/features.reg}
 : ${TILOG:=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/${(L)TINICK}}:-$HOME/.cache/${(L)TINICK}}/${(L)TINICK}.log}
 : ${TICACHE:=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/${(L)TINICK}}:-$HOME/.cache/${(L)TINICK}}}
-export TICONFIG=${~TICONFIG} TILOG=${~TILOG} TICACHE=${~TICACHE}
-command mkdir -p $TICONFIG:h $TILOG:h $TICACHE
-local QCONF=${TICONFIG//(#s)$HOME/\~}
+export TIREGI_FILE=${~TIREGI_FILE} TILOG=${~TILOG} TICACHE=${~TICACHE}
+command mkdir -p $TIREGI_FILE:h $TILOG:h $TICACHE
+local QREGI_FILE=${TIREGI_FILE//(#s)$HOME/\~}
 # useful global alias
 alias -g TIO="&>>!$TILOG"
+# configure fuzzy searcher
+(($+commands[tig-pick]))&&: ${TIFZF_BIN:=tig-pick}
+(($+commands[fzf]))&&: ${TIFZF_BIN:=fzf}
+(($+commands[fzy]))&&: ${TIFZF_BIN:=fzy}
 # No config dir found ?
-if [[ ! -d $TICONFIG:h ]]; then
+if [[ ! -d $TIREGI_FILE:h ]]; then
     timsg -h {204}Error:%f Couldn\'t setup config directory \
-                    at %B%F{39}$QCONF:h%b%f, cannot continue…
+                    at %B%F{39}$QREGI_FILE:h%b%f, cannot continue…
     return 1
 fi
 
 # No config ?
-if [[ ! -f $TICONFIG ]]; then
-    command touch $TICONFIG
-    [[ ! -f $TICONFIG ]]&&{timsg -h %U{204}Error:%f couldn\'t create \
-                the registry-file %B{39}$QCONF%f%b, please addapt \
+if [[ ! -f $TIREGI_FILE ]]; then
+    command touch $TIREGI_FILE
+    [[ ! -f $TIREGI_FILE ]]&&{timsg -h %U{204}Error:%f couldn\'t create \
+                the registry-file %B{39}$QREGI_FILE%f%b, please addapt \
                 file permissions or check if disk is full.
                 return 4}
 fi
 # Config empty?
-[[ ! -s $TICONFIG ]]&&timsg -h %U{204}Warning:%f features registry-file \
-                    \({41}$QCONF%F\) currently empty, need to \
+[[ ! -s $TIREGI_FILE ]]&&timsg -h %U{204}Warning:%f features registry-file \
+                    \({41}$QREGI_FILE%F\) currently empty, need to \
                     add some entries
 
 # Autoload functions
 autoload -z regexp-replace $TIG/functions/(xzmsg|ti::)*~*'~'(#qN.non:t)
+
+ti::util-get-prj-dir||return 1
+local -x PDIR=$REPLY PID=$REPLY:t:r
+local -x TIPID_QUEUE=$TICACHE/PID::${(U)PID}.queue
+local -x TIZERO_PAT='(#s)0#(#e)'
 
  # Snippets with code
 for q in $TIG/libexec/ti::*.zsh~*/ti::global.zsh(N.); do

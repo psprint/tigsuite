@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+0=${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}
+0=${${(M)0##/*}:-$PWD/$0}
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+
+if [[ ! -x =$TIFZF_BIN ]];then
+    local -a q=(tig-pick fzf fzy)
+    timsg -h %B{204}Error:%f%b no chooser app found, tried one of:\\n\
+%B{39}·${(~j.%f%b, {39}%B·.)q}%f%b,\\nand currently \
+${${TIFZF_BIN:+set %B{41}TIFZF_BIN%f%b to: %B{39}$TIFZF_BIN%f%b}:-\
+%B{41}TIFZF_BIN%f%b is unset)}
+    return 1
+fi
+
+return 0

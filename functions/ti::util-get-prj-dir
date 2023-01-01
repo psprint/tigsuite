@@ -1,0 +1,32 @@
+#!/bin/zsh
+
+0=${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}
+0=${${(M)0##/*}:-$PWD/$0}
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+
+
+ti::up-find-dir() {
+    local w=$1
+    reply=($PWD/(../)#$w(N))
+    reply=(${(@On)reply})
+    REPLY=$reply[1]:a
+    [[ -n $REPLY ]]
+}
+
+# Input/options
+local -A Opts
+builtin zparseopts -D -E -A Opts -- || return 1
+local prj q
+local -a qt=(.git TAGS tags CMakeLists.txt configure)
+
+for q in $qt; do
+    ti::up-find-dir $q&&prj=$REPLY&&break
+done
+
+REPLY=$REPLY:h
+if [[ -z $prj ]]; then
+    timsg -h %B{204}Error:%f%b didn\'t find any main poject dir \
+                uptree, was looking for: %B{39}·${(j.%f%b, %B{39}·.)qt}
+    return 1
+fi
+return 0
