@@ -7,23 +7,31 @@
 # Input/options
 local -A Opts
 builtin zparseopts -D -E -A Opts -- || return 1
-local ID=$1 CID=$2 
-shift 2
-{local -a Q=( ${(@0)"$(git diff -z --name-only $CID~..$CID)"} );} TIO
-# Try again with $PDIR passed as repo dir
-((!$#Q))&&{local -a Q=( ${(@0)"$(git -C $PDIR diff -z --name-only $CID~..$CID)"} );} TIO
+local FROM=$3 ID=$1 CID=$2 
+local -aU Q
 
-# Bootstrap operation
-ti::util-tigsuite-startup from-commit Q||return 1
+# Read the commit or queue and read their files 
+if [[ $FROM == commit ]];then
+    {Q=(${(@0)"$(git diff -z --name-only $CID~..$CID)"});} TIO
+    # Try again with $PDIR passed as repo dir
+    ((!$#Q))&&\
+        {Q=(${(@0)"$(git -C $PDIR diff -z --name-only $CID~..$CID)"});} TIO
+elif [[ $FROM == queue ]];then
+    Q=(${(@f)"$(<$TIPID_QUEUE)"})
+fi
+
+ # Bootstrap operation
+ti::util-verify-tigsuite-dir||return 1
+ti::util-tigsuite-startup from-commit Q $FROM||return 1
 
 if [[ $CID == 0# ]];then
-    timsg -h %U{204}Error:%f No commit highlighted in \
-    %B{204}TIG interface%f%b, exiting…
+    timsg -h %U{204}Error:%f No commit was highlighted in \
+        %B{204}TIG interface%f%b, exiting…
     return 1
 fi
 
-local -a cont=(${(@f)"$(<$TIREGI_FILE)"})
-local -a prev=(${(M)cont:#(#s)$PID/$ID: *}) filtered=(${cont:#(#s)$PID/$ID: *})
+local -aU cont=(${(@f)"$(<$TIREGI_FILE)"})
+local -aU prev=(${(M)cont:#(#s)$PID/$ID: *}) filtered=(${cont:#(#s)$PID/$ID: *})
 integer ret update
 
 if ((!$#Q));then
@@ -40,19 +48,19 @@ if (($#ID<3));then
     timsg -h %U{204}Error:%f Too short feature name given, must be of len \>\=3
     return 1
 fi
-if (($#prev>=1)); then
+if (($#prev>=1));then
         timsg -h %B{204}Warning:%f%b the given new \
             °{27}feature-ID%f°=\"%B{39}${(U)ID}%f%b\" \
-            already exists in registry-file: \
+            already exists in the registry-file: \
             %B{41}$QREGI_FILE%f%b… %B\\n\\nUpdate it? {204}[Yy/Nn]?
-        if read -q -E -e; then
+        if read -q -E -e;then
             update=1
             timsg \\n%B{41}Waiting {39}3{41} seconds to stop the edition \
                 {204}(Ctrl-C){41}…
             sleep 3
             command mv -f $TIREGI_FILE $TIREGI_FILE\~ TIO
             ret+=$?
-            if [[ -n $filtered ]]; then
+            if [[ -n $filtered ]];then
                 builtin print -l -- $filtered>>!$TIREGI_FILE
                 ret+=$?
             fi
@@ -67,7 +75,7 @@ fi
 #
 
 repeat 1 { builtin print -r -- "$PID/$ID:" Q:"${(qqq)PDIR}" \
-            "${(qqq@)Q}">>!$TIREGI_FILE; }
+            "${(qqq@)Q}">>!$TIREGI_FILE; } TIO
 ret+=$?
 
 if ((ret==0));then
@@ -75,7 +83,13 @@ if ((ret==0));then
         ${${${update:#0}:+updated}:-created} and saved \
         \(to: {39}$QREGI_FILE%f\). \\nIt contains files: \\n- \
             \{39}${(j:%f,\n- {39}:)Q}%f.
-else
+    if [[ $FROM == queue ]];then
+        builtin print -n -- >! $TIPID_QUEUE TIO
+        timsg {204}Notice:{135} the file queue of project \
+        %B{41}$PID{135}%b has been cleared (file {39}$TIPID_QUEUE{135} \
+has been truncated)
+    fi
+ else
     timsg -h %U{204}Warning:%f%b error %B{174}$ret%f%b occured \
         when writing to disk, feature %B{41}$ID%f%b could be not saved
 fi

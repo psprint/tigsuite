@@ -17,7 +17,7 @@ local -a cont=(${(@f)"$(<$TIREGI_FILE)"}) qa
 local -a prev=(${(M)cont:#(#s)$PID/$ID: *}) filtered=(${cont:#(#s)$PID/$ID: *})
 integer ret update
 
-error-msg(){timsg -h %U{204}Warning:%f%b error %B{174}$1%f%b occured;}
+error-msg(){local -h ret=$1 LINENO=$3 0=$2; timsg -h %U{204}Warning:%f%b error %B{174}$1%f%b occured;}
 
 if (($#ID<3&&$#ID>0));then 
     timsg -h %U{204}Error:%f Too short feature name given, must be of len \>\=3
@@ -40,10 +40,17 @@ if ((!$#ID));then
         print ${(r:COLUMNS::—:):-—}
         cat
     }|{q="$($TIFZF_BIN)";ret+=$?;}
+else
+    qa=(${(@)${(M)cont:#[^/]##/$ID:*}/ Q:\"[^\"]##\"/})
+    q=$qa[1]
+    [[ -n $q ]]||{timsg %B{204}Error:%f%b couldn\'t find °{27}feature%f° \
+        with {208}ID:%B{41}$ID%b%f, exiting…
+        ret+=1
+    }
 fi
 
 if ((ret));then
-    error-msg $ret
+    error-msg $ret $0:t $LINENO 
     return ret
 fi
 
