@@ -8,8 +8,7 @@
 # Handle $0 according to the Zsh Plugin Standard:
 # https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html
 
-0=${${ZERO:-${0:#$ZSH_ARGZERO}}:-${(%):-%N}}
-0=${${(M)0##/*}:-$PWD/$0}
+0=${(%):-%x}
 
 # Mark start of new output
 builtin print --
@@ -65,7 +64,8 @@ fi
 
 # Shorthand vars
 local TIG=$0:h:h
-
+typeset -g MSG1="{205}%bNO COMMIT HIGHLIGHTED IN %B{69}TIG {205}%bINTERFACE%f%b"
+ 
 # Such global variable is expected to be typeset'd -g in the plugin.zsh
 # file. Here it's restored in case of the the file being sourced as a script.
 Plugins[TIG_DIR]=$TIG

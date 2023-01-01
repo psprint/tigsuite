@@ -13,10 +13,10 @@ ti::util-tigsuite-startup queue-append GOF||return 1
 
 [[ -z $GOF ]] && return 1
 
-#print $TIPID_QUEUE e:${PDIR}
+# Load accu
 [[ ! -f $TIPID_QUEUE ]]&&command touch $TIPID_QUEUE TIO
-local -a cont=(${(@f)"$(<$TIPID_QUEUE)"})
-local -a prev=(${(M)cont:#(#s)$GOF}) filtered=(${cont:#(#s)$GOF})
+local -aU cont=(${(@f)"$(<$TIPID_QUEUE)"})
+local -aU prev=(${(M)cont:#(#s)$GOF}) filtered=(${cont:#(#s)$GOF})
 integer ret update
 
 if (($#prev>0)); then
@@ -40,9 +40,6 @@ if (($#prev>0)); then
             exit 18
         fi
 fi
-#
-# Save feature $ID with files $Q
-#
 
 repeat 1 { builtin print -r -- "$GOF">>!$TIPID_QUEUE; }
 ret+=$?

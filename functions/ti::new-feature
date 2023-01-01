@@ -15,7 +15,7 @@ if [[ $FROM == commit ]];then
     ((!$#Q))&&\
         {Q=(${(@0)"$(git -C $PDIR diff -z --name-only $CID~..$CID)"});} TIO
 elif [[ $FROM == queue ]];then
-    Q=(${(@f)"$(<$TIPID_QUEUE)"})
+    {Q=(${(@f)"$(<$TIPID_QUEUE)"});} TIO
 fi
 
  # Bootstrap operation
@@ -33,8 +33,11 @@ local -aU prev=(${(M)cont:#(#s)$PID/$ID: *}) filtered=(${cont:#(#s)$PID/$ID: *})
 integer ret update
 
 if ((!$#Q));then
-    timsg -h %U%B{204}Error:%f%b Commit nr.: %B{39}$CID%f%b doesn\'t change \
-        any files, or is incorrect, exiting…
+    [[ $FROM == commit ]]&&timsg -h %U%B{204}Error:%f%b Commit nr.:\
+        %B{39}$CID[1,7]%f%b doesn\'t change any files, or is incorrect, exiting…
+    [[ $FROM == queue ]]&&timsg -h %U%B{208}Error:%f%b accumulator/queue-file \
+        of project %B{39}$PID%f%b is empty. You can add some files by \
+        {41}Fsvf%f shortcut in %B{208}TIG interface%f%b.
     return 1
 fi
 if ((!$#ID));then 
