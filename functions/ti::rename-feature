@@ -1,0 +1,57 @@
+#!/usr/bin/env zsh
+#
+# Copyright (c) 2022 Sebastian Gniazdowski
+#
+0=${(%):-%x}
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+
+local qmet=$1 qi=$3 qn=$4
+local -aU cont=(${(@f)"$(<$TIREGI_FILE)"}) qa
+
+# Open fuzzy finder if no feature ID supplied
+if ((!$#qi||!$#qn))||[[ $qmet == tui ]];then
+    ti::util-verify-chooser-app||return 1
+    cat $TIREGI_FILE|sed -r -e 's/ Q:"[^"]+"//g'|sort -n|\
+    {
+        print ${(r:COLUMNS::—:):-—}
+        print PICK A °FEATURE° TO RENAME…
+        print Below are the configured °features°, click to pick one.
+        print ${(r:COLUMNS::—:):-—}
+        print "${(r:3:: :):-}"PID/FeatID"${(r:25:: :):-}"Files
+        print ${(r:COLUMNS::—:):-—}
+        cat
+    }|{
+        q="$($TIFZF_BIN)"
+        ret+=$?
+        qi=${${q/(#b)(#s)$PID\/([^[:space:]]##)*(#e)/${match[1]}}%:}
+        if [[ -n $qi ]]; then
+            () {
+                autoload -Uz colors; colors
+                local IFS=
+                builtin read </dev/tty &>/dev/tty \
+                    qn\?"New ID of the now ID=$fg_bold[cyan]$qi$reset_color °feature°: "
+                if (($#qn<3));then
+                     ((!$#qn))&&timsg %B{208}Error:%b{137} New ID not \
+                            specified, exiting…
+                     (($#qn))&&timsg %B{208}Error:%b{137} Length of ID has \
+                            to be at least %B{33}3%b{137}, exiting…
+                    return ret+1
+                fi
+            };(($?))&&return $?
+        fi
+    }
+fi
+
+if [[ -n $qi && -n $qn ]];then
+    local -aU prev=(${(M)cont:#(#s)$PID/$qi: *}) filtered=(${cont:#(#s)$PID/$qi: *})
+    qa=(${prev[@]/(#s)$PID\/$qi:/$PID/$qn:})
+    repeat 1 {printf %s\\n $filtered>!$TIREGI_FILE;ret+=$?;}
+    repeat 1 {printf %s\\n $qa>>!$TIREGI_FILE;ret+=$?;}
+    timsg %B{27}Feature: {41}$qi{27} renamed to: {41}$qn
+else
+        timsg %B{208}Error:%f%b Two IDs required, {41}from%f and {33}to%f,\
+            exiting… 
+fi
+
+
+

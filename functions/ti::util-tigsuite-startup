@@ -52,6 +52,8 @@ local -a qa=(${(@z)${(PA@)qc}})
 
 # dir, QREGI_FILE 
 timsg %B{204}Initial status{135} of the operation:\\n\
+{135}· {41}PID{135} – the present PWD project-ID/tag:\
+    «[227]{27}${(U)PID}{135}%k»\\n\
 %B{135}· Project dir: %U{39}$PDIR%u{135}\\n\
 · Registry file path: {69}$QREGI_FILE{135}
 
@@ -59,8 +61,7 @@ timsg %B{204}Initial status{135} of the operation:\\n\
 [[ -n $ID ]]&&timsg %B{135}· The name of the °{41}feature{135}° given: «[227]{27}${ID}{135}%k»
 
 # TIG_SUITE_DIR, PID
-timsg %B{135}· %B{204}$TINICK{135} source directory path: {69}$TIG_SUITE_DIR{135}\\n\
-· {41}PID{135} – project-id/tag: «[227]{27}${(U)PID}{135}%k»
+timsg %B{135}· %B{204}$TINICK{135} source directory path: {69}$TIG_SUITE_DIR{135}
 
 # FILES ↔ COMMIT
 if [[ $1 = from-commit ]];then
