@@ -4,7 +4,7 @@
 
 # According to the Zsh Plugin Standard:
 # https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html
-0=${(%):-%x}
+0="${(%):-%x}"
 
 # Then ${0:h} to get plugin's directory
 

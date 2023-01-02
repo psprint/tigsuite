@@ -1,9 +1,14 @@
 #!/usr/bin/env zsh
 # -*- mode: sh; sh-indentation: 4; indent-tabs-mode: nil; sh-basic-offset: 4; -*# Copyright (c) 2022 Sebastian Gniazdowski
-0=${(%):-%x}
+0="${(%):-%x}"
 
 local which=$1 met=$3 obj=$2
 local -aU qa
+
+# Initialize
+ti::util-verify-cid "$which" $obj||return 1
+ti::util-verify-tigsuite-dir||return 1
+ti::util-tigsuite-startup rename "" $which-$obj||return 1
 
 if [[ $which == queue ]];then
     if [[ ! -s $TIPID_QUEUE ]];then

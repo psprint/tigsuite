@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-0=${(%):-%x}
+0="${(%):-%x}"
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 # Input/options
@@ -11,9 +11,8 @@ OP=copy-$FROM
 
 
 # Initialize
-ti::util-verify-cid||return 1
-ti::util-verify-tigsuite-dir||return 1
-ti::util-tigsuite-startup $OP||return 1
+ti::util-verify-cid "$FROM" $CID||return 1
+ti::util-tigsuite-startup $OP "" $FROM-$CID||return 1
 
 # Read the commit or feature 
 if [[ $FROM == commit ]];then
@@ -33,9 +32,8 @@ fi
 
 local -a qa=($reply)
 
-# Load accu
-[[ ! -f $TIPID_QUEUE ]]&&command touch $TIPID_QUEUE TIO
-local -aU cont=(${(@f)"$(<$TIPID_QUEUE)"})
+# Create accu
+[[ ! -f $TIPID_QUEUE ]]&&builtin print -n>!$TIPID_QUEUE 2>$TINL
 integer ret
 
 repeat 1 {builtin printf %s\\n $qa>>!$TIPID_QUEUE;ret+=$?;}
@@ -46,4 +44,4 @@ if ((!ret));then
 else
     timsg -h %B{208}Warning:{138}%b non-zero code (%B{41}$ret%f%b),
         something went wrong
- fi
+fi

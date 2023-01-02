@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-0=${(%):-%x}
+0="${(%):-%x}"
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 if [[ ! -x =$TIFZF_BIN ]];then

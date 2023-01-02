@@ -1,13 +1,14 @@
 #!/usr/bin/env zsh
-0=${(%):-%x}
+0="${(%):-%x}"
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
+[[ $1 == -q ]]&&integer quiet=1&&shift
 # Uses $ID, $PID, $PDIR, $TIPID_QUEUE
-local q op=$1 qc=$2
-local ctxt="NO COMMIT WAS HIGHLIGHTED IN %B{204}TIG-interface"
+local q op=$1 qc=$2 CID=$3
 
 # Read the var by name – files to be added to feat-$ID
-local -a qa=(${(@z)${(PA@)qc}})
+local -a qa
+[[ -n $qc ]]&&qa=(${(@z)${(PA@)qc}})
 
 # dir, QREGI_FILE 
 timsg %B{204}Initial status{135} of the operation ≈ {39}$op{135}:\\n\
@@ -20,10 +21,6 @@ timsg %B{204}Initial status{135} of the operation ≈ {39}$op{135}:\\n\
 [[ -n $ID ]]&&timsg %B{135}· The name of the °{41}feature{135}° given: \
                 «[227]{27}${ID}{135}%k»
 
-# CID
-[[ $CID != 0# ]]&&timsg %B{135}· The hovered commit in {205}TIG%f interface: \
-                «{27}${CID[1,7]}{135}»
-
 # TIG_SUITE_DIR, PID
 timsg %B{135}· {41}$TINICK{135} source directory path: {69}$TIG_SUITE_DIR{135}\
  \\n{135}· Accumulator/queue-file: {39}$TIPID_QUEUE:t{135} of project {41}$PID
@@ -31,3 +28,17 @@ timsg %B{135}· {41}$TINICK{135} source directory path: {69}$TIG_SUITE_DIR{135}\
 # Chooser program
 timsg %B{135}· Chooser {33}TUI{135} app to pick °{27}features{135}° to \
     open them: %U{204}${TIFZF_BIN:-(none)}
+
+# Commit
+if [[ $CID == commit* && $CID != commit-0# ]];then
+    CID=${CID#commit-}
+    local pre='%B{135}· {135}Commit hovered when leaving {207}%UTIG%u{135}:'
+    if ti::util-verify-cid -q $CID; then
+        timsg $pre {41}$CID[1,7]
+    elif [[ $CID == 0# ]];then
+        timsg $pre {207}NO HOVERED COMMIT
+    else
+        timsg $pre {207}INCORRECT:{174}$CID
+    fi
+fi
+ 

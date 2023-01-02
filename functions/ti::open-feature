@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-0=${(%):-%x}
+0="${(%):-%x}"
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 # Input/options
@@ -8,8 +8,10 @@ builtin zparseopts -D -E -A Opts -- -get-files-only||return 1
 local ID=$1 CID=$2 pid_feat rest pdir q qed
 
 # Initialize
+ti::util-verify-cid "$FROM" $CID||return 1
 ti::util-verify-tigsuite-dir||return 1
-((!$+Opts[--get-files-only]))&&{ti::util-tigsuite-startup open||return 1;}
+((!$+Opts[--get-files-only]))&&{ti::util-tigsuite-startup open "" "<empty>"|| \
+    return 1;}
 
 local -a cont=(${(@f)"$(<$TIREGI_FILE)"}) qa
 local -a prev=(${(M)cont:#(#s)$PID/$ID: *}) filtered=(${cont:#(#s)$PID/$ID: *})

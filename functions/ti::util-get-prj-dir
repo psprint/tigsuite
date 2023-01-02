@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-0=${(%):-%x}
+0="${(%):-%x}"
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 
@@ -12,8 +12,6 @@ ti::up-find-dir() {
 }
 
 # Input/options
-local -A Opts
-builtin zparseopts -D -E -A Opts -- || return 1
 local prj q
 local -a qt=(.git TAGS tags CMakeLists.txt configure)
 

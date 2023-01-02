@@ -2,12 +2,16 @@
 #
 # Copyright (c) 2022 Sebastian Gniazdowski
 #
-0=${(%):-%x}
+0="${(%):-%x}"
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 local qmet=$1 qi=$3 qn=$4 q
 local -aU cont=(${(@f)"$(<$TIREGI_FILE)"}) qa
 integer qc
+
+# Initialize
+ti::util-verify-tigsuite-dir||return 1
+ti::util-tigsuite-startup rename "" "<empty>"||return 1
 
 # Open fuzzy finder if no feature ID supplied
 if ((!$#qi||!$#qn))||[[ $qmet == tui ]];then
@@ -64,6 +68,3 @@ else
         timsg %B{208}Error:%f%b Two IDs required, {41}from%f and {33}to%f,\
             exiting… 
 fi
-
-
-

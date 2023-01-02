@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2022 Sebastian Gniazdowski
 #
-0=${(%):-%x}
+0="${(%):-%x}"
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 # Run as script? ZSH_SCRIPT is a Zsh 5.3 addition

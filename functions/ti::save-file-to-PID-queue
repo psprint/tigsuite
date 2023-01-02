@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-0=${(%):-%x}
+0="${(%):-%x}"
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 # Input/options
@@ -9,7 +9,7 @@ local GOF=$1 CID=$2
 
 # Initialize
 ti::util-verify-tigsuite-dir||return 1
-ti::util-tigsuite-startup queue-append GOF||return 1
+ti::util-tigsuite-startup queue-append GOF "<empty>"||return 1
 
 [[ -z $GOF ]] && return 1
 

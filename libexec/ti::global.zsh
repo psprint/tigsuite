@@ -8,7 +8,7 @@
 # Handle $0 according to the Zsh Plugin Standard:
 # https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html
 
-0=${(%):-%x}
+0="${(%):-%x}"
 
 # Mark start of new output
 builtin print --
@@ -81,14 +81,16 @@ path+=( $TIG/{bin,libexec,functions}(N/) )
 # Modules
 zmodload zsh/parameter zsh/datetime
 
-export TIREGI_FILE TILOG TICACHE TIFZF_BIN
+export TIREGI_FILE TILOG TICACHE TIFZF_BIN TINL
 
  # Right customizable ~/.config/… and ~/.cache/… file paths
 : ${TIREGI_FILE:=${${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/${(L)TINICK}}:-$HOME/.config/${(L)TINICK}}/features.reg}
 : ${TILOG:=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/${(L)TINICK}}:-$HOME/.cache/${(L)TINICK}}/${(L)TINICK}.log}
 : ${TICACHE:=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/${(L)TINICK}}:-$HOME/.cache/${(L)TINICK}}}
-export TIREGI_FILE=${~TIREGI_FILE} TILOG=${~TILOG} TICACHE=${~TICACHE}
-command mkdir -p $TIREGI_FILE:h $TILOG:h $TICACHE
+: ${TINL:=$TILOG}
+export TIREGI_FILE=${~TIREGI_FILE} TILOG=${~TILOG} TICACHE=${~TICACHE} \
+        TINL=${~TINL}
+command mkdir -p $TIREGI_FILE:h $TILOG:h $TICACHE $TINL:h
 local QREGI_FILE=${TIREGI_FILE//(#s)$HOME/\~}
 # useful global alias
 alias -g TIO="&>>!$TILOG"
@@ -121,6 +123,8 @@ fi
 # Autoload functions
 autoload -z regexp-replace $TIG/functions/(xzmsg|ti::)*~*'~'(#qN.non:t)
 
+# Export a few local var
+ti::util-verify-tigsuite-dir||return 1
 ti::util-get-prj-dir||return 1
 local -x PDIR=$REPLY PID=$REPLY:t:r
 local -x TIPID_QUEUE=$TICACHE/PID::${(U)PID}.queue

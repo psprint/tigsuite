@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-0=${(%):-%x}
+0="${(%):-%x}"
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 # Input/options
@@ -11,7 +11,7 @@ local OP=edit-ext-$FROM EDITOR=${EDITOR:-mcedit}
 
 # Initialize
 ti::util-verify-tigsuite-dir||return 1
-ti::util-tigsuite-startup $OP||return 1
+ti::util-tigsuite-startup $OP "" "<empty>"||return 1
 
 if [[ $FROM == features ]]; then
     $EDITOR $TIREGI_FILE

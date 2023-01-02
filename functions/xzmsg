@@ -1,6 +1,9 @@
 #!/usr/bin/env zsh
-0=${(%):-%x}
+0="${(%):-%x}"
 builtin emulate -L zsh -o extendedglob
+
+# Quiet
+[[ $1 == 1 ]]&&return
 
 local -A Opts
 builtin zparseopts -D -E -A Opts -- \

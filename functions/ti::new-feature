@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-0=${(%):-%x}
+0="${(%):-%x}"
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 # Input/options
@@ -18,15 +18,10 @@ elif [[ $FROM == queue ]];then
     {Q=(${(@f)"$(<$TIPID_QUEUE)"});} TIO
 fi
 
- # Bootstrap operation
+# Bootstrap operation
+ti::util-verify-cid $FROM $CID||return 1
 ti::util-verify-tigsuite-dir||return 1
-ti::util-tigsuite-startup from-commit Q $FROM||return 1
-
-if [[ $CID == 0# ]];then
-    timsg -h %U{204}Error:%f No commit was highlighted in \
-        %B{204}TIG interface%f%b, exiting…
-    return 1
-fi
+ti::util-tigsuite-startup new-feature/$FROM Q $FROM-$CID||return 1
 
 local -aU cont=(${(@f)"$(<$TIREGI_FILE)"})
 local -aU prev=(${(M)cont:#(#s)$PID/$ID: *}) filtered=(${cont:#(#s)$PID/$ID: *})
