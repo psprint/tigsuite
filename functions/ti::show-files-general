@@ -3,6 +3,7 @@
 0=${(%):-%x}
 
 local which=$1 met=$3 obj=$2
+local -aU qa
 
 if [[ $which == queue ]];then
     if [[ ! -s $TIPID_QUEUE ]];then
@@ -17,7 +18,8 @@ if [[ $which == queue ]];then
             in TIG interface
         print ${(r:COLUMNS::—:):-—}
         print Files in the accumulator/queue-file:\\n
-        cat $TIPID_QUEUE|sed -r -e 's/^/·/'
+        qa=(${(@f)"$(<$TIPID_QUEUE)"})
+        printf %s\\n $qa|sed -r -e 's/^/·/'
      }|tig
 fi
  

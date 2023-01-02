@@ -4,12 +4,12 @@
 
 # Input/options
 local -A Opts
-builtin zparseopts -D -E -A Opts --||return 1
+builtin zparseopts -D -E -A Opts -- -get-files-only||return 1
 local ID=$1 CID=$2 pid_feat rest pdir q qed
 
 # Initialize
 ti::util-verify-tigsuite-dir||return 1
-ti::util-tigsuite-startup open||return 1
+((!$+Opts[--get-files-only]))&&{ti::util-tigsuite-startup open||return 1;}
 
 local -a cont=(${(@f)"$(<$TIREGI_FILE)"}) qa
 local -a prev=(${(M)cont:#(#s)$PID/$ID: *}) filtered=(${cont:#(#s)$PID/$ID: *})
@@ -29,10 +29,8 @@ if ((!$#ID));then
     {
         print ${(r:COLUMNS::—:):-—}
         print Below are the configured °features°, click to open.
-        print · 1st column is: PID/FeatID » PID is project ID \
+        print 1st column is: PID/FeatID » PID is project ID \
                 and FeatID is the feature\'s NAME.
-        print · remaining columns are the files belonging to \
-                their °features°.
         print ${(r:COLUMNS::—:):-—}
         print "${(r:3:: :):-}"PID/FeatID"${(r:25:: :):-}"Files
         print ${(r:COLUMNS::—:):-—}
@@ -53,7 +51,7 @@ if ((ret));then
 fi
 
 if [[ $q == (#b)([^/]##/[^/]##):((([[:space:]]##\"[^\"]##\")##)) ]];then
-    pid_feat=$match[1] rest=$match[3]
+    pid_feat=$match[1] rest=$match[3] ID=$match[1]:t
     qa=("${(@Q)${(@Z+Cn+)${q##$match[1]:[[:space:]]#}}}")
     ((!$#qa))&&{timsg -h %B{204}Error:%f%b couldn\'t read °{27}feature\'s%f° \
                     data, entry is corrupted; return 1;}
@@ -64,10 +62,17 @@ if [[ $q == (#b)([^/]##/[^/]##):((([[:space:]]##\"[^\"]##\")##)) ]];then
     for q in $cont; do
         if [[ $q == (#b)$pid_feat:[[:space:]]##Q:\"([^\"]##)\"$rest ]];then
             pdir=$match[1]
-            timsg {41}Found dir of %BPID:$pid_feat:h%b: {39}$pdir\\n\
+            if (($+Opts[--get-files-only])); then
+                reply=($qa) REPLY=$ID$'\0'$pdir
+                [[ -d $pdir ]]
+                return $?
+            else
+                timsg {41}Found dir of %BPID:$pid_feat:h%b: {39}$pdir\\n\
 {33}Opening \$EDITOR=%B{27}$EDITOR%f%b…
-            qed=${EDITOR:-mcedit}
-            command $qed ${qa/(#s)/$pdir/}
+                qed=${EDITOR:-mcedit}
+                command $qed ${qa/(#s)/$pdir/}
+            fi
+            break
         fi
     done
 fi

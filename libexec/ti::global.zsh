@@ -18,7 +18,7 @@ builtin emulate -L zsh
 builtin setopt extendedglob warncreateglobal typesetsilent noshortloops \
     noautopushd promptsubst
 
-export TINICK=TigSuite TINICKSMALL=TigSu
+local -x TINICK=TigSuite TINICK_=TigSu
 typeset -gA Plugins
 
 # FUNCTION: timsg [[[
@@ -51,8 +51,8 @@ if [[ $0 != */ti::global.zsh || ! -f $0 ]]; then
         0=$Plugins[TIG_DIR]/libexec/ti::global.zsh
         TIG_SUITE_DIR=$Plugins[TIG_DIR]
     else
-        local -a q=( $Plugins[TIG_DIR] $TIG_SUITE_DIR $0:h:h )
-        timsg {204}Error:%f couldn\'t locate {39}Tig Suite\'s%f source \
+        local -a q=($Plugins[TIG_DIR] $TIG_SUITE_DIR $0:h:h)
+        timsg {204}Error:%f couldn\'t locate {39}$TINICK\'s%f source \
             directory (tryied in dirs: {27}${(j:%f,{27}:)q}%f), cannot \
             continue.
         return 1
@@ -64,20 +64,19 @@ fi
 
 # Shorthand vars
 local TIG=$0:h:h
-typeset -g MSG1="{205}%bNO COMMIT HIGHLIGHTED IN %B{69}TIG {205}%bINTERFACE%f%b"
- 
-# Such global variable is expected to be typeset'd -g in the plugin.zsh
-# file. Here it's restored in case of the the file being sourced as a script.
+
 Plugins[TIG_DIR]=$TIG
 local -a reply match mbegin mend
-local REPLY MATCH; integer MBEGIN MEND
+local REPLY MATCH TMP; integer MBEGIN MEND
+local -aU path=($path) fpath=($fpath)
+local -U PATH FPATH
 
 # In case of the script using other scripts from the plugin, either set up
 # $fpath and autoload, or add the directory to $PATH.
-fpath+=( $TIG/{libexec,functions} )
+fpath+=( $TIG/{libexec,functions}(N/) )
 
 # OR
-path+=( $TIG/{bin,libexec,functions} )
+path+=( $TIG/{bin,libexec,functions}(N/) )
 
 # Modules
 zmodload zsh/parameter zsh/datetime
@@ -94,13 +93,14 @@ local QREGI_FILE=${TIREGI_FILE//(#s)$HOME/\~}
 # useful global alias
 alias -g TIO="&>>!$TILOG"
 # configure fuzzy searcher
-(($+commands[tig-pick]))&&: ${TIFZF_BIN:=tig-pick}
-(($+commands[fzf]))&&: ${TIFZF_BIN:=fzf}
-(($+commands[fzy]))&&: ${TIFZF_BIN:=fzy}
+for TMP in tig-pick fzf fzy; do
+    (($+commands[$TMP]))&&: ${TIFZF_BIN:=$TMP}&&break
+done
+
 # No config dir found ?
 if [[ ! -d $TIREGI_FILE:h ]]; then
     timsg -h {204}Error:%f Couldn\'t setup config directory \
-                    at %B%F{39}$QREGI_FILE:h%b%f, cannot continue…
+                    at %B%F{39}$QREGI_FILE:h%b%f, exiting…
     return 1
 fi
 
@@ -112,6 +112,7 @@ if [[ ! -f $TIREGI_FILE ]]; then
                 file permissions or check if disk is full.
                 return 4}
 fi
+
 # Config empty?
 [[ ! -s $TIREGI_FILE ]]&&timsg -h %U{204}Warning:%f features registry-file \
                     \({41}$QREGI_FILE%F\) currently empty, need to \

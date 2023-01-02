@@ -3,87 +3,31 @@
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 # Uses $ID, $PID, $PDIR, $TIPID_QUEUE
-local q qc=$2
+local q op=$1 qc=$2
 local ctxt="NO COMMIT WAS HIGHLIGHTED IN %B{204}TIG-interface"
-
-# Startup message
-if [[ $1 == open ]];then
-
-timsg %B%U{135}STARTING OPERATION: {41}OPENING {174}\$EDITOR{41} ON FILES \
-    FROM A °{69}FEATURE{41}° ${TIFZF_BIN:+BY SELECTING IT BY A TUI CHOOSER APP \
-WHICH IS: {204}$TIFZF_BIN}
-    
-
-elif [[ $1 == queue-append ]];then
-
-timsg %B%U{135}STARTING OPERATION: {41}SAVING {204}TIG{41}-HIGHLIGHTED \
-{69}FILE{41} INTO A QUEUE, TO THEN CREATE °{69}FEATURE{41}°\\n\
-{135}Copy of highlighted (in {204}TIG{135} interface) files to \
-a {39}$TIPID_QUEUE:t{135} accumulator/queue-file for later creating a \
-°{69}feature{135}° \
-from the saved files allowing to comfortably open °{69}feature\'s{135}° all \
-kept files by using its {69}feature-NAME{135} (uses {137}\$EDITOR{135}, from \
-{69}tig{135} interface and {41}tigsu{135} command-line program).
-
-elif [[ $1 == from-commit && $3 == commit ]];then
-
-timsg %B%U{135}STARTING OPERATION: {41}CREATE NEW °{69}FEATURE{41}° \
-    FROM-COMMIT{135}\\nCopy of files from picked commit \
-    to a {27}%U°feature°%u{135} allowing to open its all kept files \
-    in {137}\$EDITOR{135} from {69}TIG{135} interface and \
-    {41}tigsu{135} command-line program.
-
-elif [[ $1 == from-commit && $3 == queue ]];then
-
- timsg %B%U{135}STARTING OPERATION: {41}CREATE NEW °{69}FEATURE{41}° \
-    FROM-ACCU/QUEUE{135}%u\\nCopy the saved files from accumulator/queue-file \
-    to a {27}%U°feature°%u{135} allowing to open its all kept files \
-    in {137}\$EDITOR{135} from {69}TIG{135} interface and \
-    {41}tigsu{135} command-line program.
-fi
 
 # Read the var by name – files to be added to feat-$ID
 local -a qa=(${(@z)${(PA@)qc}})
 
 # dir, QREGI_FILE 
-timsg %B{204}Initial status{135} of the operation:\\n\
+timsg %B{204}Initial status{135} of the operation ≈ {39}$op{135}:\\n\
 {135}· {41}PID{135} – the present PWD project-ID/tag:\
     «[227]{27}${(U)PID}{135}%k»\\n\
 %B{135}· Project dir: %U{39}$PDIR%u{135}\\n\
 · Registry file path: {69}$QREGI_FILE{135}
 
 # ID
-[[ -n $ID ]]&&timsg %B{135}· The name of the °{41}feature{135}° given: «[227]{27}${ID}{135}%k»
+[[ -n $ID ]]&&timsg %B{135}· The name of the °{41}feature{135}° given: \
+                «[227]{27}${ID}{135}%k»
+
+# CID
+[[ $CID != 0# ]]&&timsg %B{135}· The hovered commit in {205}TIG%f interface: \
+                «{27}${CID[1,7]}{135}»
 
 # TIG_SUITE_DIR, PID
-timsg %B{135}· %B{204}$TINICK{135} source directory path: {69}$TIG_SUITE_DIR{135}
-
-# FILES ↔ COMMIT
-if [[ $1 = from-commit ]];then
-    timsg %B{135}· %B{204}TIG{135} interface highlighted {39}commit{135}: \
-            %U{76}${${${CID[1,7]:-$ctxt}:#0##}:-$ctxt}
-    [[ $3 == commit ]]&&local pre="Files from the highlighted"\
-" commit: {39}$CID[1,7]{135}"
-    [[ $3 == queue ]]&&local pre="Files from the accumulator/queue-file:"\
-" {39}$TIPID_QUEUE:t{135} for the project {41}$PID{135}"
-    timsg %B{135}· $pre: \
-        ${${qa:+\\n- {39}·${(~j.{135},\n- {39}·.)qa}{135}}:-\
-\\n– \(%B{204}error:{135} no files found in picked commit, nothing \
-to do, {204}exiting{135}…\)}
-fi
-
-# FILES ↔ QUEUE
-if [[ $1 = queue-append ]];then
-    timsg %B{135}· Files to add to the accumulator/queue-file for project \
-{204}${(U)PID}{135} ({41}$TIPID_QUEUE{135}):
-    if [[ -z $qa ]];then
-        timsg – %B{135}({204}error: {135}no file was highlighted in {204}TIG \
-interface{135}, nothing to do, {204}exiting{135}…)
-    else
-        timsg ${qa:+- {39}·${(~j.{135},\n- {39}·.)qa}}
-    fi
-fi
+timsg %B{135}· {41}$TINICK{135} source directory path: {69}$TIG_SUITE_DIR{135}\
+ \\n{135}· Accumulator/queue-file: {39}$TIPID_QUEUE:t{135} of project {41}$PID
 
 # Chooser program
-timsg %B{135}· Chooser {137}TUI{135} app to pick °{27}features{135}° to \
+timsg %B{135}· Chooser {33}TUI{135} app to pick °{27}features{135}° to \
     open them: %U{204}${TIFZF_BIN:-(none)}

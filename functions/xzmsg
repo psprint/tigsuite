@@ -11,7 +11,7 @@ local funloc=$1
 # Allow but strip non-number format codes, for future expansions
 (($+Opts[-e]))&&local e=-u2
 if ((!$+Options[-q]&&!$+Opts[-q]||$+Opts[-p])); then
-    (($+Opts[-h]))&&builtin print -Pn -- "%F{135}%U%B[%b${(L)TINICK}%B]%b:"&& \
+    (($+Opts[-h]))&&builtin print -Pn -- "%F{135}%U%B[%b$TINICK%B]%b:"&& \
         builtin print -Pn "%F{27}%B[%b$funloc%B]%b:%f "
 
      local -a q=("${(@)${(@)${(@)@//\{[^0-9][^\}]##\}/}//(#b)(\{[^\}]##\})/%F$match[1]}//$HOME/\~}%k%f%b%u")
