@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+0=${(%):-%x}
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+
+local FROM=$1 CID=$2
+
+[[ $FROM != commit ]]&&return 0
+ 
+if [[ $CID == 0# ]];then
+    timsg %B{208}Error:{138}%b No commit was highlighted in %B{208}TIG{138}%b \
+            program, got no commit hash, exiting…
+    return 1
+fi
+
+if ! git rev-parse --verify --quiet $CID^{commit} TIO;then
+    timsg %B{208}Error:{138}%b Hash {33}$CID[1,7]{138} isn\'t a commit,\
+            exiting…
+    return 1
+fi
+
+ return 0

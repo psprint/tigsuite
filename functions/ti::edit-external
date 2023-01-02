@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+0=${(%):-%x}
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+
+# Input/options
+local -A Opts
+builtin zparseopts -D -E -A Opts -- || return 1
+
+local FROM=$1 PID_=$2 ID OP QUEUE=$TIPID_QUEUE
+local OP=edit-ext-$FROM EDITOR=${EDITOR:-mcedit}
+
+# Initialize
+ti::util-verify-tigsuite-dir||return 1
+ti::util-tigsuite-startup $OP||return 1
+
+if [[ $FROM == features ]]; then
+    $EDITOR $TIREGI_FILE
+fi
+if [[ $FROM == queue ]]; then
+    [[ -n $PID_ ]]&&QUEUE=$TICACHE/PID::$PID_.queue
+    $EDITOR $QUEUE
+fi
+  

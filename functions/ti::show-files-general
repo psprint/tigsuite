@@ -14,11 +14,12 @@ if [[ $which == queue ]];then
         print ${(r:COLUMNS::—:):-—}
         print Showing files gathered for current PWD project \
             \($PID\) in the queue file:\\n·$TIPID_QUEUE
-        print To convert it into a °feature° object press Fnq \
+        print To convert it into a °feature° object press \"enq\" \
             in TIG interface
         print ${(r:COLUMNS::—:):-—}
         print Files in the accumulator/queue-file:\\n
-        qa=(${(@f)"$(<$TIPID_QUEUE)"})
+        {qa=(${(@f)"$(<$TIPID_QUEUE)"});} TIO
+        (($#qa))||qa=("Error: $TIPID_QUEUE is empty")
         printf %s\\n $qa|sed -r -e 's/^/·/'
      }|tig
 fi

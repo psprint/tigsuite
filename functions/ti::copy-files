@@ -1,0 +1,49 @@
+#!/usr/bin/env zsh
+0=${(%):-%x}
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+
+# Input/options
+local -A Opts
+builtin zparseopts -D -E -A Opts -- || return 1
+
+local FROM=$1 CID=$2 ID OP
+OP=copy-$FROM
+
+
+# Initialize
+ti::util-verify-cid||return 1
+ti::util-verify-tigsuite-dir||return 1
+ti::util-tigsuite-startup $OP||return 1
+
+# Read the commit or feature 
+if [[ $FROM == commit ]];then
+    {reply=(${(@0)"$(git diff -z --name-only $CID~..$CID)"});} TIO
+    # Try again with $PDIR passed as repo dir
+    ((!$#reply))&&\
+        {reply=(${(@0)"$(git -C $PDIR diff -z --name-only $CID~..$CID)"});} TIO
+elif [[ $FROM == feature ]];then
+    ti::open-feature --get-files-only||return 1
+    ID=${REPLY%%$'\0'*} REPLY=${REPLY##*$'\0'} 
+    if [[ $REPLY != $PDIR ]];then
+        timsg %B{208}Error:{138}%b chosen °{27}feature{208}≈{39}$ID\
+{138}° not from PWD, cannot copy files, exitinig…
+        return 1
+    fi
+fi
+
+local -a qa=($reply)
+
+# Load accu
+[[ ! -f $TIPID_QUEUE ]]&&command touch $TIPID_QUEUE TIO
+local -aU cont=(${(@f)"$(<$TIPID_QUEUE)"})
+integer ret
+
+repeat 1 {builtin printf %s\\n $qa>>!$TIPID_QUEUE;ret+=$?;}
+
+if ((!ret));then
+    timsg %B{208}Notice:{138} queue of project {39}${(U)PID}{138} \
+        extended with files from $FROM
+else
+    timsg -h %B{208}Warning:{138}%b non-zero code (%B{41}$ret%f%b),
+        something went wrong
+ fi
