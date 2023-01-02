@@ -10,23 +10,39 @@ ti::util-verify-cid "$which" $obj||return 1
 ti::util-verify-tigsuite-dir||return 1
 ti::util-tigsuite-startup rename "" $which-$obj||return 1
 
+preamble-and-files() {
+        local tpe=$1 cid=$2 cmd txt
+        print ${(r:COLUMNS::—:):-—}
+        print -n Showing files gathered for current PWD project
+        if [[ $tpe == commit ]];then
+            print \ \($PID\) in the commit: ·$cid[1,7]
+            cmd=enc
+            txt="commit ·$cid[1,7]"
+            {qa=(${(@f)"$(command git diff --name-only $cid~..$cid)"});} TIO
+        fi
+        if [[ $tpe == queue ]];then
+            print \ \($PID\) in the queue file:\\n·$TIPID_QUEUE
+            txt=accumulator/queue-file
+            cmd=enq
+            {qa=(${(@f)"$(<$TIPID_QUEUE)"});} TIO
+        fi
+        print To convert it into a °feature° object press \"$cmd\" \
+            in TIG interface
+        print ${(r:COLUMNS::—:):-—}
+        print Files in the $txt:\\n
+        (($#qa))||qa=("Error: no data obtained")
+        printf %s\\n $qa|sed -r -e 's/^/·/'
+}
+
 if [[ $which == queue ]];then
     if [[ ! -s $TIPID_QUEUE ]];then
         timsg -h %B{204}Notice:%f%b queue is empty, nothing to display…
         return 1
     fi
-    {
-        print ${(r:COLUMNS::—:):-—}
-        print Showing files gathered for current PWD project \
-            \($PID\) in the queue file:\\n·$TIPID_QUEUE
-        print To convert it into a °feature° object press \"enq\" \
-            in TIG interface
-        print ${(r:COLUMNS::—:):-—}
-        print Files in the accumulator/queue-file:\\n
-        {qa=(${(@f)"$(<$TIPID_QUEUE)"});} TIO
-        (($#qa))||qa=("Error: $TIPID_QUEUE is empty")
-        printf %s\\n $qa|sed -r -e 's/^/·/'
-     }|tig
+    preamble-and-files $which|tig
+fi
+if [[ $which == commit ]];then
+    preamble-and-files $which $obj|tig
 fi
  
  # vim:ft=zsh:tw=80:sw=4:sts=4:et:foldmarker=[[[,]]]

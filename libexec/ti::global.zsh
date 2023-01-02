@@ -85,8 +85,8 @@ export TIREGI_FILE TILOG TICACHE TIFZF_BIN TINL
 
  # Right customizable ~/.config/… and ~/.cache/… file paths
 : ${TIREGI_FILE:=${${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/${(L)TINICK}}:-$HOME/.config/${(L)TINICK}}/features.reg}
-: ${TILOG:=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/${(L)TINICK}}:-$HOME/.cache/${(L)TINICK}}/${(L)TINICK}.log}
 : ${TICACHE:=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/${(L)TINICK}}:-$HOME/.cache/${(L)TINICK}}}
+: ${TILOG:=$TICACHE/${(L)TINICK}.log}
 : ${TINL:=$TILOG}
 export TIREGI_FILE=${~TIREGI_FILE} TILOG=${~TILOG} TICACHE=${~TICACHE} \
         TINL=${~TINL}

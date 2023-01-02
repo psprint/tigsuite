@@ -19,8 +19,12 @@ Plugins[TIG_DIR]="$0:h"
 () {
     emulate -L zsh -o extendedglob
     # Standard hash for plugins, to not pollute the namespace
+    : ${TICACHE:=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/tigsuite}:-\
+$HOME/.cache/tigsuite}}
+    : ${TILOG:=$TICACHE/tio.log}
     export TIG_SUITE_DIR=$Plugins[TIG_DIR] \
-        TIG_SUITE_GL=$Plugins[TIG_DIR]/libexec/ti::global.zsh
+        TIG_SUITE_GL=$Plugins[TIG_DIR]/libexec/ti::global.zsh \
+        TICACHE TILOG
     autoload -z $TIG_SUITE_DIR/functions/(ti::|xzmsg)*~*~(:tN.)
 }
 
