@@ -57,7 +57,6 @@ if [[ $q == (#b)([^/]##/[^/]##):((([[:space:]]##\"[^\"]##\")##)) ]];then
     qa=("${(@Q)${(@Z+Cn+)${q##$match[1]:[[:space:]]#}}}")
     ((!$#qa))&&{timsg -h %B{204}Error:%f%b couldn\'t read °{27}feature\'s%f° \
                     data, entry is corrupted; return 1;}
-    timsg %B{204}NOTICE:%f%b files of °{27}feature%f°: «%B{204}${match[1]##*/}\
     timsg %B{204}NOTICE:%f%b files of °{27}feature%f°{135} ID=«%B{204}${match[1]##*/}\
 %f%b» are:\\n- {39}·${(~j.%f,\n- {39}·.)qa}
 

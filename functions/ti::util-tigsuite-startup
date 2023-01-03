@@ -15,15 +15,14 @@ timsg %B{204}Initial status{135} of the operation ≈ {39}$op{135}:\\n\
 {135}· {41}PID{135} – the present PWD project-ID/tag:\
     «[227]{27}${(U)PID}{135}%k»\\n\
 %B{135}· Project dir: %U{39}$PDIR%u{135}\\n\
-· Registry file path: {69}$QREGI_FILE{135}
+· Registry file path: {69}$QREGI_FILE{135}\\n\
+· Accumulator/queue-file: {39}$TIPID_QUEUE:t{135} of project {41}$PID
 
 # ID
-[[ -n $ID ]]&&timsg %B{135}· The name of the °{41}feature{135}° given: \
-                «[227]{27}${ID}{135}%k»
+[[ -n $ID ]]&&timsg %B{135}· The name of the °{41}feature-ID{135}{135}° is: [227]{27}${ID}{135}%k°
 
-# TIG_SUITE_DIR, PID
-timsg %B{135}· {41}$TINICK{135} source directory path: {69}$TIG_SUITE_DIR{135}\
- \\n{135}· Accumulator/queue-file: {39}$TIPID_QUEUE:t{135} of project {41}$PID
+# TIG_SUITE_DIR
+timsg %B{135}· {41}$TINICK{135} root directory path: {69}$TIG_SUITE_DIR{135}
 
 # Chooser program
 timsg %B{135}· Chooser {33}TUI{135} app to pick °{27}features{135}° to \

@@ -29,9 +29,9 @@ preamble-and-files() {
         print To convert it into a °feature° object press \"$cmd\" \
             in TIG interface
         print ${(r:COLUMNS::—:):-—}
-        print Files in the $txt:\\n
+        print \\nFiles in the $txt:\\n
         (($#qa))||qa=("Error: no data obtained")
-        printf %s\\n $qa|sed -r -e 's/^/·/'
+        printf ·%s\\n $qa
 }
 
 if [[ $which == queue ]];then
