@@ -6,8 +6,8 @@ local which=$1 met=$3 obj=$2
 local -aU qa
 
 # Initialize
-ti::util-verify-cid "$which" $obj||return 1
 ti::util-verify-tigsuite-dir||return 1
+ti::util-verify-cid "$which" $obj||return 1
 ti::util-tigsuite-startup rename "" $which-$obj||return 1
 
 preamble-and-files() {
@@ -39,10 +39,11 @@ if [[ $which == queue ]];then
         timsg -h %B{204}Notice:%f%b queue is empty, nothing to display…
         return 1
     fi
-    preamble-and-files $which|tig
+    local -a arg=($which)
 fi
 if [[ $which == commit ]];then
-    preamble-and-files $which $obj|tig
+    local -a arg=($which $obj)
 fi
+preamble-and-files $arg|tig
  
  # vim:ft=zsh:tw=80:sw=4:sts=4:et:foldmarker=[[[,]]]

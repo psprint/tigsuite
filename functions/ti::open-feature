@@ -27,7 +27,7 @@ fi
 # Open fuzzy finder if no feature ID supplied
 if ((!$#ID));then
     ti::util-verify-chooser-app||return 1
-    cat $TIREGI_FILE|sed -r -e 's/ Q:"[^"]+"//g'|sort -n|\
+    printf ·%s\\n ${(on)${(@f)"$(<$TIREGI_FILE)"}/ Q:\"[^\"]##\"}|\
     {
         print ${(r:COLUMNS::—:):-—}
         print Below are the configured °features°, click to open.
@@ -58,6 +58,7 @@ if [[ $q == (#b)([^/]##/[^/]##):((([[:space:]]##\"[^\"]##\")##)) ]];then
     ((!$#qa))&&{timsg -h %B{204}Error:%f%b couldn\'t read °{27}feature\'s%f° \
                     data, entry is corrupted; return 1;}
     timsg %B{204}NOTICE:%f%b files of °{27}feature%f°: «%B{204}${match[1]##*/}\
+    timsg %B{204}NOTICE:%f%b files of °{27}feature%f°{135} ID=«%B{204}${match[1]##*/}\
 %f%b» are:\\n- {39}·${(~j.%f,\n- {39}·.)qa}
 
     # Look up the project's directory
