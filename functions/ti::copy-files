@@ -34,7 +34,7 @@ if [[ $FROM == tree ]];then
     reply=(${(@f)"$(command git ls-files|grep -vE '(README.(md|txt)|LICENSE|\.gitignore)')"})
 fi
 if [[ $FROM == tree-of-commit ]];then
-    reply=(${(@f)"$(command git ls-tree --name-only $CID|grep -vE '(README.(md|txt)|LICENSE|\.gitignore)')"})
+    reply=(${(@f)"$(command git ls-tree -r --name-only $CID|command grep -vE '(README.(md|txt)|LICENSE|\.gitignore)')"})
 fi
 
 local -a qa=($reply)
