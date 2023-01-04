@@ -27,7 +27,6 @@ fi
 # Open fuzzy finder if no feature ID supplied
 if ((!$#ID));then
     ti::util-verify-chooser-app||return 1
-    printf ·%s\\n ${(on)${(@f)"$(<$TIREGI_FILE)"}/ Q:\"[^\"]##\"}|\
     {
         print ${(r:COLUMNS::—:):-—}
         print Below are the configured °features°, click to open.
@@ -36,8 +35,8 @@ if ((!$#ID));then
         print ${(r:COLUMNS::—:):-—}
         print "${(r:3:: :):-}"PID/FeatID"${(r:25:: :):-}"Files
         print ${(r:COLUMNS::—:):-—}
-        cat
-    }|{q="$($TIFZF_BIN)";ret+=$?;}
+        printf ·%s\\n ${(on)${(@f)"$(<$TIREGI_FILE)"}/ Q:\"[^\"]##\"}
+    }|{q="${$($TIFZF_BIN ${${(M)TIFZF_BIN:#fzf}:+--tac})#·}";ret+=$?;}
 else
     qa=(${(@)${(M)cont:#[^/]##/$ID:*}/ Q:\"[^\"]##\"/})
     q=$qa[1]

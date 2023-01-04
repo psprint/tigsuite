@@ -20,7 +20,8 @@ if [[ $FROM == commit ]];then
     # Try again with $PDIR passed as repo dir
     ((!$#reply))&&\
         {reply=(${(@0)"$(git -C $PDIR diff -z --name-only $CID~..$CID)"});} TIO
-elif [[ $FROM == feature ]];then
+fi
+if [[ $FROM == feature ]];then
     ti::open-feature --get-files-only||return 1
     ID=${REPLY%%$'\0'*} REPLY=${REPLY##*$'\0'} 
     if [[ $REPLY != $PDIR ]];then
@@ -28,6 +29,12 @@ elif [[ $FROM == feature ]];then
 {138}° not from PWD, cannot copy files, exitinig…
         return 1
     fi
+fi
+if [[ $FROM == tree ]];then
+    reply=(${(@f)"$(command git ls-files|grep -vE '(README.(md|txt)|LICENSE|\.gitignore)')"})
+fi
+if [[ $FROM == tree-of-commit ]];then
+    reply=(${(@f)"$(command git ls-tree --name-only $CID|grep -vE '(README.(md|txt)|LICENSE|\.gitignore)')"})
 fi
 
 local -a qa=($reply)

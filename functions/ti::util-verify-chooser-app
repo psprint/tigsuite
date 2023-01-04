@@ -2,6 +2,13 @@
 0="${(%):-%x}"
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
+local TMP
+# configure fuzzy searcher
+[[ -z $TIFZF_BIN ]]&&for TMP in tig-pick fzf fzy; do
+    (($+commands[$TMP]))&&: ${TIFZF_BIN:=$TMP}&&break
+done
+REPLY=$TIFZF_BIN
+
 if [[ ! -x =$TIFZF_BIN ]];then
     local -a q=(tig-pick fzf fzy)
     timsg -h %B{204}Error:%f%b no chooser app found, tried one of:\\n\

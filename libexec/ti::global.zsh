@@ -94,10 +94,6 @@ command mkdir -p $TIREGI_FILE:h $TILOG:h $TICACHE $TINL:h
 local QREGI_FILE=${TIREGI_FILE//(#s)$HOME/\~}
 # useful global alias
 alias -g TIO="&>>!$TILOG"
-# configure fuzzy searcher
-for TMP in tig-pick fzf fzy; do
-    (($+commands[$TMP]))&&: ${TIFZF_BIN:=$TMP}&&break
-done
 
 # No config dir found ?
 if [[ ! -d $TIREGI_FILE:h ]]; then
@@ -125,6 +121,7 @@ autoload -z regexp-replace $TIG/functions/(xzmsg|ti::)*~*'~'(#qN.non:t)
 
 # Export a few local var
 ti::util-verify-tigsuite-dir||return 1
+ti::util-verify-chooser-app||return 1
 ti::util-get-prj-dir||return 1
 local -x PDIR=$REPLY PID=$REPLY:t:r
 local -x TIPID_QUEUE=$TICACHE/PID::${(U)PID}.queue
