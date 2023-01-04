@@ -3,18 +3,22 @@
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 local TMP
-# configure fuzzy searcher
-[[ -z $TIFZF_BIN ]]&&for TMP in tig-pick fzf fzy; do
-    (($+commands[$TMP]))&&: ${TIFZF_BIN:=$TMP}&&break
-done
-REPLY=$TIFZF_BIN
+typeset -g $TICHOOSER_APP
 
-if [[ ! -x =$TIFZF_BIN ]];then
-    local -a q=(tig-pick fzf fzy)
+# configure fuzzy searcher
+local TMP=$TICHOOSER_APP
+[[ ! -x $TICHOOSER_APP ]]&&for TMP in tig-pick fzf fzy; do
+    (($+commands[$TMP]))&&: ${TICHOOSER_APP:=$TMP}&&break
+    [[ -x $TIG_SUITE_DIR/bin/$TMP ]]&&TICHOOSER_APP=$TIG_SUITE_DIR/bin/$TMP&&break
+done
+REPLY=$TICHOOSER_APP
+
+if [[ ! -x =$TICHOOSER_APP ]];then
+    local -a q=($TMP tig-pick fzf fzy)
     timsg -h %B{204}Error:%f%b no chooser app found, tried one of:\\n\
 %B{39}·${(~j.%f%b, {39}%B·.)q}%f%b,\\nand currently \
-${${TIFZF_BIN:+set %B{41}TIFZF_BIN%f%b to: %B{39}$TIFZF_BIN%f%b}:-\
-%B{41}TIFZF_BIN%f%b is unset)}
+${${TICHOOSER_APP:+set %B{41}TICHOOSER_APP%f%b to: %B{39}$TICHOOSER_APP%f%b}:-\
+%B{41}TICHOOSER_APP%f%b is unset)}
     return 1
 fi
 

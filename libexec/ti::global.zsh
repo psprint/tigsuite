@@ -81,7 +81,7 @@ path+=( $TIG/{bin,libexec,functions}(N/) )
 # Modules
 zmodload zsh/parameter zsh/datetime
 
-export TIREGI_FILE TILOG TICACHE TIFZF_BIN TINL
+export TIREGI_FILE TILOG TICACHE TICHOOSER_APP TINL
 
  # Right customizable ~/.config/… and ~/.cache/… file paths
 : ${TIREGI_FILE:=${${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/${(L)TINICK}}:-$HOME/.config/${(L)TINICK}}/features.reg}

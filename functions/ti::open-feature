@@ -36,7 +36,7 @@ if ((!$#ID));then
         print "${(r:3:: :):-}"PID/FeatID"${(r:25:: :):-}"Files
         print ${(r:COLUMNS::—:):-—}
         printf ·%s\\n ${(on)${(@f)"$(<$TIREGI_FILE)"}/ Q:\"[^\"]##\"}
-    }|{q="${$($TIFZF_BIN ${${(M)TIFZF_BIN:#fzf}:+--tac})#·}";ret+=$?;}
+    }|{q="${$($TICHOOSER_APP ${${(M)TICHOOSER_APP:#fzf}:+--tac})#·}";ret+=$?;}
 else
     qa=(${(@)${(M)cont:#[^/]##/$ID:*}/ Q:\"[^\"]##\"/})
     q=$qa[1]
