@@ -3,7 +3,7 @@
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 local TMP
-typeset -g $TICHOOSER_APP
+typeset -g TICHOOSER_APP
 
 # configure fuzzy searcher
 local TMP=$TICHOOSER_APP

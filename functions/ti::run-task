@@ -1,0 +1,30 @@
+#!/usr/bin/env zsh
+0="${(%):-%x}"
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+
+# Input/options
+local -A Opts
+builtin zparseopts -D -E -A Opts -- -exec || return 1
+
+ti::util-verify-tigsuite-dir||return 1
+ti::util-verify-chooser-app||return 1
+
+local qc=.tig_history qi
+local -a CFG=( $HOME/$qc(N) $XDG_CONFIG_HOME/tig/$qc(N) $HOME/.config/tig/$qc(N) )
+CFG=$CFG[1]
+local -a tasks=(${(M)${(@f)"$(<$CFG)"}:#(\!|exec[[:space:]]##)*})
+integer ret
+
+{
+    print Tig saved commands:
+    printf %s\\n $tasks
+}|{qi="$($TICHOOSER_APP)";ret+=$?;}
+
+local qtmp=$TICACHE/tig-script
+cat >$qtmp <<end
+:bind generic ex :echo "In a new \`tig\` from previous \`ex\` command, quit first"
+:$qi
+end
+
+(($+Opts[--exec]))&&TIG_SCRIPT=$qtmp exec tig
+((!$+Opts[--exec]))&&TIG_SCRIPT=$qtmp tig
