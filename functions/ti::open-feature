@@ -71,13 +71,8 @@ if [[ $q == (#b)([^/]##/[^/]##):((([[:space:]]##\"[^\"]##\")##)) ]];then
                 timsg {41}Found dir of %BPID:$pid_feat:h%b: {39}$pdir\\n\
 {33}Opening \$EDITOR=%B{27}$EDITOR%f%b…
 
-                qed=${EDITOR:-mcedit}
-                (($+commands[$qed]))||qed=$VISUAL
-                (($+commands[$qed]))||qed=emacs
-                (($+commands[$qed]))||qed=micro
-                (($+commands[$qed]))||qed=vim
-
-                command $qed ${qa/(#s)/$pdir/}
+                ti::util-get-editor||return 1
+                command $REPLY ${qa/(#s)/$pdir/}
             fi
             break
         fi

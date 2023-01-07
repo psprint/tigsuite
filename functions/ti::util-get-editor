@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+0="${(%):-%x}"
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+
+# Input/options
+local -A Opts
+builtin zparseopts -D -E -A Opts -- -e: || return 1
+
+ti::util-verify-tigsuite-dir||return 1
+
+local qed=${${${Opts[-e]:-$TIG_EDITOR}:-$EDITOR}:-mcedit}
+(($+commands[$qed]))||qed=mcedit
+(($+commands[$qed]))||qed=emacs
+(($+commands[$qed]))||qed=micro
+(($+commands[$qed]))||qed=vim
+(($+commands[$qed]))||qed=
+
+[[ -z $qed ]]&&xzmsg {208}%BError:{137} no editor found, please set \
+            {37}EDITOR{137} or {37}TIG_EDITOR{137} in environment, exiting…
+
+REPLY=$qed
+[[ -n $REPLY ]]
