@@ -32,13 +32,19 @@ printf %s\\n "bind pager <Enter> <zsh -c 'printf \$0 >&2' %(text)" \
     'color "/^[^·]+/" blue default bold' \
   >>! "$CONFIG"
 
+local qi="$(<&0)"
+local -a qa=(${(f@)qi})
+
 # Run tig with the standard and error output channels swapped.
 export TIGRC_USER=$CONFIG
-stderr=$(tig "$@" 3>&2 2>&1 1>&3 3>&-) || {
-	status=$?
+{
+ stderr=$(command tig "$@" 3>&2 2>&1 1>&3 3>&-) || {
+	local qc=$?
 	print "$stderr" >&2
-	exit $status
-}
-commit=$(print "$stderr" | tail -n1)
+	exit $qc
+ }
+} < <(printf %s\\n $qa)
 
-print -r -- "$commit"
+local qe=$(print "$stderr" | tail -n1)
+qe=${${(M)qa:#$qe*}[1]}
+print -r -- "$qe"

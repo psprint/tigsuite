@@ -70,7 +70,7 @@ fi
 # Save feature $ID with files $Q
 #
 
-repeat 1 { builtin print -r -- "$PID/$ID:" Q:"${(qqq)PDIR}" \
+repeat 1 { builtin print -r -- ${cont:+$'\n'}"$PID/$ID:" Q:"${(qqq)PDIR}" \
             "${(qqq@)Q}">>!$TIREGI_FILE; } TIO
 ret+=$?
 
