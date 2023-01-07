@@ -26,5 +26,5 @@ cat >$qtmp <<end
 :$qi
 end
 
-(($+Opts[--exec]))&&TIG_SCRIPT=$qtmp exec tig
+#(($+Opts[--exec]))&&TIG_SCRIPT=$qtmp exec tig
 ((!$+Opts[--exec]))&&TIG_SCRIPT=$qtmp tig
