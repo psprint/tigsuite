@@ -27,7 +27,10 @@ fi
 
 # Bind Enter to print the selected commit ID to error output and exit after
 # that.
-print "bind pager <Enter> <zsh -c 'printf \$0 >&2' %(text)" >>! "$CONFIG"
+printf %s\\n "bind pager <Enter> <zsh -c 'printf \$0 >&2' %(text)" \
+    'color "/—+/" magenta default normal' \
+    'color "/^[^·]+/" blue default bold' \
+  >>! "$CONFIG"
 
 # Run tig with the standard and error output channels swapped.
 export TIGRC_USER=$CONFIG
