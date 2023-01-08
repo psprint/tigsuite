@@ -35,12 +35,12 @@ $HOME/.cache/tigsuite}}
     fi
 
     # Save original config
-    : ${TIORIG_RC:=$qc}
+    [[ -f $qc ]]&&TIORIG_RC=$qc
     export TIORIG_RC TIGRC_USER=$TIG_SUITE_DIR/xtigrc
 
     # Create new config which includes old
     print -r -- source $TIG_SUITE_DIR/tigrc>!$TIGRC_USER
-    [[ -n $TIORIG_RC ]]&&print -r -- source $TIORIG_RC>>!$TIGRC_USER
+    [[ -f $TIORIG_RC ]]&&print -r -- source $TIORIG_RC>>!$TIGRC_USER
 }
 
 # vim:ft=zsh:tw=80:sw=4:sts=4:et:foldmarker=[[[,]]]

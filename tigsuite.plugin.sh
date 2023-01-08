@@ -65,12 +65,12 @@ Provide it by setting ZERO to it.\\n"
     fi
 
     # Save original config
-    : ${TIORIG_RC:=$qc}
+    [[ -f $qc ]]&&TIORIG_RC=$qc
     export TIORIG_RC TIGRC_USER=$TIG_SUITE_DIR/xtigrc
 
     # Create new config which includes old
     printf "source $TIG_SUITE_DIR/tigrc\\n">$TIGRC_USER
-    [[ -n $TIORIG_RC ]]&&printf "source $TIORIG_RC\\n">>$TIGRC_USER
+    [[ -f $TIORIG_RC ]]&&printf "source $TIORIG_RC\\n">>$TIGRC_USER
 } && _ "$@"
 
 unset -f _ err_trap
