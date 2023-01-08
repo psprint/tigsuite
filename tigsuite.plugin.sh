@@ -5,12 +5,11 @@
 # Bash full initiate script
 #
 TMP="$_"
-PRETMP=$TMP
 TINAME=tigsuite.plugin.sh
-[[ -f $TMP ]]&&TMP="${TMP##(./|/)*}"||TMP="${BASH_SOURCE[0]##(./|/)*}"
-[[ -f $TMP ]]&&TMP=./"$TMP"||TMP="${PRETMP:-${BASH_SOURCE[0]}}"
-[[ ! -s $ZERO ]]&&ZERO="$(cd -- "${TMP%/*}" && pwd )"/$TINAME
-unset TMP PRETMP
+[[ ! -f $TMP ]]&&TMP="${BASH_SOURCE[0]}"
+[[ $TMP != ./* && $TMP != /* ]]&&TMP=./"$TMP"
+ZERO="$(cd -- "${TMP%/*}" 2>/dev/null && pwd )"/$TINAME
+unset TMP
 
 err_trap() {
     local cmd=$1 l=$2 rc=$3 msg=$4
