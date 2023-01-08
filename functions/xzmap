@@ -1,0 +1,40 @@
+#!/usr/bin/env zsh
+# Copyright (c) 2022 Sebastian Gniazdowski
+0="${(%):-%x}"
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+
+# Input/options
+local -A Opts
+builtin zparseopts -D -E -A Opts -- || return 1
+
+local f=$1
+shift
+
+builtin type timsg &>$TILOG||alias timsg=xzmsg
+ 
+[[ -z $f ]]&&{
+    timsg -h {208}Error:{137} Missing first arg: runnable name/path
+    return 1
+}
+
+if ! type $f &>$TILOG; then
+    timsg -h {208}Error:{137} Couldn\'t find runnable: {33}$f
+     return 3
+fi
+
+(($# <= 0))&&{
+    timsg -h {208}Error:{137} Missing arguments: the objects to run ·{33}$f\
+        {137}· on
+    return 1
+}
+
+reply=()
+local qe ec
+
+for qe; do
+    repeat 1 {$f $qe&&{ec+=0;reply+=($REPLY)}||{ec+=$(($?%10));reply+=("");};}
+done
+REPLY=$ec
+
+# At least 1 zero code exists?
+[[ REPLY != <1-9># ]]
