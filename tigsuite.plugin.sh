@@ -4,18 +4,38 @@
 #
 # Bash full initiate script
 #
-
+TMP="$_"
+PRETMP=$TMP
 TINAME=tigsuite.plugin.sh
-ZERO="$(cd -- "${BASH_SOURCE[0]%/*}" && pwd )"/$TINAME
+[[ -f $TMP ]]&&TMP="${TMP##(./|/)*}"||TMP="${BASH_SOURCE[0]##(./|/)*}"
+[[ -f $TMP ]]&&TMP=./"$TMP"||TMP="${PRETMP:-${BASH_SOURCE[0]}}"
+[[ ! -s $ZERO ]]&&ZERO="$(cd -- "${TMP%/*}" && pwd )"/$TINAME
+unset TMP PRETMP
+
+err_trap() {
+    local cmd=$1 l=$2 rc=$3 msg=$4
+
+    printf "[%s:%s] %s\\n" "${ZERO##*/}" "$l" \
+        "Error occured, cmd=·$cmd·, code=$rc $msg"
+    return ${rc:-9}
+}
 
 _() {
-    # Prepare environment (options, word splitting)
+
+    #
+    # Environment preparation for this file (options, word splitting)
+    #
+
     local -a opts=(extglob failglob globstar)
-    trap " $(shopt -p ${opts[@]}); $(shopt -po noglob); trap - RETURN" RETURN
+    trap " $(shopt -p ${opts[@]}); $(shopt -po noglob); trap - RETURN ERR" RETURN
+    trap 'err_trap "$BASH_COMMAND" "$LINENO" "$?" "$1"; trap - ERR' ERR
     shopt -s ${opts[@]}
     set -f
     local IFS=
 
+    #
+    # Environment preparation for the plugin (exported vars, PATH, etc.)
+    #
     if [[ ! -s $ZERO ]]; then
         printf "Couldn't get the correct tigsuite.plugin.sh path.\\n\
 Provide it by setting ZERO to it.\\n"
@@ -27,9 +47,9 @@ Provide it by setting ZERO to it.\\n"
     : ${TICACHE:=$HOME/.cache/tigsuite}
     : ${TILOG:=$TICACHE/tig.log}
     : ${TICHOOSE_APP:=tig-pick}
-    : ${TIG_SUITE_DIR:=${ZERO/*}}
+    : ${TIG_SUITE_DIR:=${ZERO%/*}}
     [[ $TIG_SUITE_DIR != /* || ! -f $TIG_SUITE_DIR/tigsuite.plugin.sh ]]&&\
-        TIG_SUITE_DIR=${ZERO/*}
+        TIG_SUITE_DIR=${ZERO%/*}
     [[ $TIG_SUITE_GL != */ti::global.zsh ]]&&\
         TIG_SUITE_GL=$TIG_SUITE_DIR/libexec/ti::global.zsh
     export TIG_SUITE_DIR TIG_SUITE_GL TICACHE TILOG TICHOOSE_APP
@@ -45,14 +65,14 @@ Provide it by setting ZERO to it.\\n"
     fi
 
     # Save original config
-    : ${TIG_ORIG_RC:=$qc}
-    export TIG_ORIG_RC TIGRC_USER=$TIG_SUITE_DIR/xtigrc
+    : ${TIORIG_RC:=$qc}
+    export TIORIG_RC TIGRC_USER=$TIG_SUITE_DIR/xtigrc
 
     # Create new config which includes old
-    printf "source $TIG_SUITE_DIR/tigrc\\n" >$TIGRC_USER
-    [[ -n $TIG_ORIG_RC ]]&&printf "source $TIG_ORIG_RC\\n">>$TIGRC_USER
+    printf "source $TIG_SUITE_DIR/tigrc\\n">$TIGRC_USER
+    [[ -n $TIORIG_RC ]]&&printf "source $TIORIG_RC\\n">>$TIGRC_USER
 } && _ "$@"
 
-unset -f _
+unset -f _ err_trap
 
 # vim:ft=zsh:tw=80:sw=4:sts=4:et:foldmarker=[[[,]]]
