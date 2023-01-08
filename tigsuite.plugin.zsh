@@ -37,7 +37,7 @@ $HOME/.cache/tigsuite}}
     fi
 
     # Save original config
-    [[ ! -f $qc ]]&&TIORIG_RC=$qc||print "Warning: ·TigSuite· found no user"
+    [[ -f $qc ]]&&TIORIG_RC=$qc||print "Warning: ·TigSuite· found no user" \
         "tigrc. (Run \`touch ~/.tigrc\` to mute this warning.)"
     export TIORIG_RC TIGRC_USER=$TIG_SUITE_DIR/xtigrc
 
