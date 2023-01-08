@@ -23,6 +23,8 @@ $HOME/.cache/tigsuite}}
         TIG_SUITE_GL=$Plugins[TIG_DIR]/libexec/ti::global.zsh \
         TICACHE TILOG
     autoload -z $TIG_SUITE_DIR/functions/(ti::|xz*)*~*~(:tN.)
+    (($+functions[xzmsg]))||print -r -- "Warning: ·TigSuite· plugin occurred" \
+                                "problems when loading functions"
 
     # Use config
     local qc qct=${XDG_CONFIG_HOME:-$HOME/.config}/tig/tigrc
@@ -35,7 +37,8 @@ $HOME/.cache/tigsuite}}
     fi
 
     # Save original config
-    [[ -f $qc ]]&&TIORIG_RC=$qc
+    [[ ! -f $qc ]]&&TIORIG_RC=$qc||print "Warning: ·TigSuite· found no user"
+        "tigrc. (Run \`touch ~/.tigrc\` to mute this warning.)"
     export TIORIG_RC TIGRC_USER=$TIG_SUITE_DIR/xtigrc
 
     # Create new config which includes old

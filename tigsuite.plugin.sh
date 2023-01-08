@@ -65,7 +65,8 @@ Provide it by setting ZERO to it.\\n"
     fi
 
     # Save original config
-    [[ -f $qc ]]&&TIORIG_RC=$qc
+    [[ -f $qc ]]&&TIORIG_RC=$qc||printf "Warning: ·TigSuite· found\
+ no user tigrc. (Run \`touch ~/.tigrc\` to mute this warning.)\\n"
     export TIORIG_RC TIGRC_USER=$TIG_SUITE_DIR/xtigrc
 
     # Create new config which includes old
