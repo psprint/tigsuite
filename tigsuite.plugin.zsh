@@ -27,6 +27,24 @@ $HOME/.cache/tigsuite}}
         TIG_SUITE_GL=$Plugins[TIG_DIR]/libexec/ti::global.zsh \
         TICACHE TILOG
     autoload -z $TIG_SUITE_DIR/functions/(ti::|xzmsg)*~*~(:tN.)
+
+    # Use config
+    local qc qct=${XDG_CONFIG_HOME:-$HOME/.config}/tig/tigrc
+    if [[ -n ${TIGRC_USER##$TIG_SUITE_DIR*} ]];then
+        qc=$TIGRC_USER
+    elif [[ -f $qct  ]];then
+        qc=$qct
+    elif [[ -f ~/.tigrc ]];then
+        qc=$HOME/.tigrc
+    fi
+
+    # Save original config
+    : ${TIG_ORIG_RC:=$qc}
+    export TIG_ORIG_RC TIGRC_USER=$TIG_SUITE_DIR/xtigrc
+
+    # Create new config which includes old
+    print -r -- source $TIG_SUITE_DIR/tigrc>!$TIGRC_USER
+    [[ -n $TIG_ORIG_RC ]]&&print -r -- source $TIG_ORIG_RC>>!$TIGRC_USER
 }
 
 # vim:ft=zsh:tw=80:sw=4:sts=4:et:foldmarker=[[[,]]]

@@ -70,7 +70,6 @@ if [[ $q == (#b)([^/]##/[^/]##):((([[:space:]]##\"[^\"]##\")##)) ]];then
             else
                 timsg {41}Found dir of %BPID:$pid_feat:h%b: {39}$pdir\\n\
 {33}Opening \$EDITOR=%B{27}$EDITOR%f%b…
-
                 ti::util-get-editor||return 1
                 command $REPLY ${qa/(#s)/$pdir/}
             fi

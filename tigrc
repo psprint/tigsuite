@@ -1,0 +1,45 @@
+#
+# The commands that are provided by this plugin
+#
+
+###
+### Previous commands
+###
+
+bind generic xex >!zsh  -c 'rm -f $TIG_SCRIPT;source $TIG_SUITE_GL&&ti::run-task'
+
+###
+### Features
+###
+
+bind generic equ !zsh  -c 'source $TIG_SUITE_GL&&ti::edit-external queue'
+bind generic efe !zsh  -c 'source $TIG_SUITE_GL&&ti::edit-external features'
+# Oglądanie plikow
+bind generic esq !zsh  -c 'source $TIG_SUITE_GL&&ti::show-files-general queue'
+bind generic esc !zsh  -c 'source $TIG_SUITE_GL&&ti::show-files-general commit  "${${${${:-%(commit)}//$~TIZERO_PAT/}:-%(blob)}//$~TIZERO_PAT/}"'
+
+# Object creation
+bind generic enc !zsh  -c 'source $TIG_SUITE_GL&&ti::new-feature "%(prompt What name-ID to the new feature to give? )" "${${${${:-%(commit)}//$~TIZERO_PAT/}:-%(blob)}//$~TIZERO_PAT/}" "commit"'
+bind generic enq !zsh  -c 'source $TIG_SUITE_GL&&ti::new-feature "%(prompt What name-ID to the new feature to give? )" "${${${${:-%(commit)}//$~TIZERO_PAT/}:-%(blob)}//$~TIZERO_PAT/}" "queue"'
+
+# Saving in accumulator/queue
+bind generic esvt !zsh -c 'source $TIG_SUITE_GL&&ti::copy-files tree'
+bind generic esvT !zsh -c 'source $TIG_SUITE_GL&&ti::copy-files tree-of-commit "${${${${${:-%(commit)}//$~TIZERO_PAT/}:-%(blob)}//$~TIZERO_PAT/}:-}"'
+bind generic eqe !zsh -c 'source $TIG_SUITE_GL&&print -n>!$TIPID_QUEUE&&timsg_ %B{208}Notice: {33}Emptied accu/queue-file $MSG3||timsg_ %B{205}Error: {137}Could not empty accu/queue-file'
+bind generic esvf !zsh -c 'source $TIG_SUITE_GL&&ti::save-file-to-PID-queue "%(file)"'
+bind generic esvF !zsh -c 'source $TIG_SUITE_GL&&ti::copy-files feature'
+bind generic esvc !zsh -c 'source $TIG_SUITE_GL&&ti::copy-files commit "${${${${${:-%(commit)}//$~TIZERO_PAT/}:-%(blob)}//$~TIZERO_PAT/}:-}"'
+
+# Removal of files from objects
+bind generic e-1fe !zsh -c 'source $TIG_SUITE_GL&&ti::remove-file feature'
+bind generic e-1qf !zsh -c 'source $TIG_SUITE_GL&&ti::remove-file queue'
+bind generic e-fe !zsh -c 'source $TIG_SUITE_GL&&ti::undo-file "feature"'
+bind generic e-fq !zsh -c 'source $TIG_SUITE_GL&&ti::undo-file "queue"'
+
+# Opening °features°
+bind generic eopm !zsh  -c 'source $TIG_SUITE_GL&&ti::open-feature'
+bind generic eope !zsh  -c 'source $TIG_SUITE_GL&&ti::open-feature "%(prompt ID of the °feature° to open: )"'
+
+# Renaming features
+bind generic erem !zsh  -c 'source $TIG_SUITE_GL&&ti::rename-feature tui'
+bind generic eree !zsh  -c 'source $TIG_SUITE_GL&&ti::rename-feature prompt "" "%(prompt ID of the °feature° to rename: )" "%(prompt New ID: )"'
