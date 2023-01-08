@@ -10,12 +10,12 @@ local -aU cont=(${(@f)"$(<$TIREGI_FILE)"}) qa
 integer qc
 
 # Initialize
-ti::util-verify-tigsuite-dir||return 1
-ti::util-tigsuite-startup rename "" "<empty>"||return 1
+util/ti::verify-tigsuite-dir||return 1
+util/ti::tigsuite-startup rename "" "<empty>"||return 1
 
 # Open fuzzy finder if no feature ID supplied
 if ((!$#qi||!$#qn))||[[ $qmet == tui ]];then
-    ti::util-verify-chooser-app||return 1
+    util/ti::verify-chooser-app||return 1
     cat $TIREGI_FILE|sed -r -e 's/ Q:"[^"]+"//g'|sort -n|\
     {
         print ${(r:COLUMNS::—:):-—}

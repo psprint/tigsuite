@@ -8,8 +8,8 @@ builtin zparseopts -D -E -A Opts -- || return 1
 local GOF=$1 CID=$2
 
 # Initialize
-ti::util-verify-tigsuite-dir||return 1
-ti::util-tigsuite-startup queue-append GOF "<empty>"||return 1
+util/ti::verify-tigsuite-dir||return 1
+util/ti::tigsuite-startup queue-append GOF "<empty>"||return 1
 
 [[ -z $GOF ]] && return 1
 

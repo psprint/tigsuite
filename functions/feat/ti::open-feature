@@ -8,9 +8,9 @@ builtin zparseopts -D -E -A Opts -- -get-files-only||return 1
 local ID=$1 CID=$2 pid_feat rest pdir q qed
 
 # Initialize
-ti::util-verify-cid "$FROM" $CID||return 1
-ti::util-verify-tigsuite-dir||return 1
-((!$+Opts[--get-files-only]))&&{ti::util-tigsuite-startup open "" "<empty>"|| \
+util/ti::verify-cid "$FROM" $CID||return 1
+util/ti::verify-tigsuite-dir||return 1
+((!$+Opts[--get-files-only]))&&{util/ti::tigsuite-startup open "" "<empty>"|| \
     return 1;}
 
 local -a cont=(${(@f)"$(<$TIREGI_FILE)"}) qa
@@ -26,7 +26,7 @@ fi
 
 # Open fuzzy finder if no feature ID supplied
 if ((!$#ID));then
-    ti::util-verify-chooser-app||return 1
+    util/ti::verify-chooser-app||return 1
     {
         print ${(r:COLUMNS::—:):-—}
         print Below are the configured °features°, click to open.
@@ -70,7 +70,7 @@ if [[ $q == (#b)([^/]##/[^/]##):((([[:space:]]##\"[^\"]##\")##)) ]];then
             else
                 timsg {41}Found dir of %BPID:$pid_feat:h%b: {39}$pdir\\n\
 {33}Opening \$EDITOR=%B{27}$EDITOR%f%b…
-                ti::util-get-editor||return 1
+                util/ti::get-editor||return 1
                 command $REPLY ${qa/(#s)/$pdir/}
             fi
             break

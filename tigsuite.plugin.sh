@@ -4,6 +4,7 @@
 #
 # Bash full initiate script
 #
+
 TMP="$_"
 TINAME=tigsuite.plugin.sh
 [[ ! -f $TMP ]]&&TMP="${BASH_SOURCE[0]}"

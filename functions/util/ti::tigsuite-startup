@@ -32,7 +32,7 @@ timsg %B{135}· Chooser {33}TUI{135} app to pick °{27}features{135}° to \
 if [[ $CID == commit* && $CID != commit-0# ]];then
     CID=${CID#commit-}
     local pre='%B{135}· {135}Commit hovered when leaving {207}%UTIG%u{135}:'
-    if ti::util-verify-cid -q $CID; then
+    if util/ti::verify-cid -q $CID; then
         timsg $pre {41}$CID[1,7]
     elif [[ $CID == 0# ]];then
         timsg $pre {207}NO HOVERED COMMIT

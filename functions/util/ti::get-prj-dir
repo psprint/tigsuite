@@ -3,7 +3,7 @@
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 
-ti::up-find-dir() {
+feat/ti::up-find-dir() {
     local w=$1
     reply=($PWD/(../)#$w(N))
     reply=(${(@On)reply})
@@ -16,7 +16,7 @@ local prj q
 local -a qt=(.git TAGS tags CMakeLists.txt configure)
 
 for q in $qt; do
-    ti::up-find-dir $q&&prj=$REPLY&&break
+    feat/ti::up-find-dir $q&&prj=$REPLY&&break
 done
 
 REPLY=$REPLY:h

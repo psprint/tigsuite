@@ -1,7 +1,8 @@
 #!/usr/bin/env zsh
 # Copyright (c) 2022 Sebastian Gniazdowski
+[[ $0 != xzmap || -n $ZSH_SCRIPT ]]&&integer is_script=1
 0="${(%):-%x}"
-: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+: ${TIG_SUITE_DIR:=$0:h:h}
 
 # Input/options
 local -A Opts
@@ -19,7 +20,7 @@ builtin type timsg &>$TILOG||alias timsg=xzmsg
 
 if ! type $f &>$TILOG; then
     timsg -h {208}Error:{137} Couldn\'t find runnable: {33}$f
-     return 3
+    return 3
 fi
 
 (($# <= 0))&&{
@@ -37,4 +38,11 @@ done
 REPLY=$ec
 
 # At least 1 zero code exists?
-[[ REPLY != <1-9># ]]
+[[ REPLY != <1-9># ]]&&integer have_output=1
+
+# If run as script, then output via stdout
+if ((have_output&&is_script));then
+    print -r -- $REPLY
+    printf %s\\n $reply
+fi
+return 1-have_output

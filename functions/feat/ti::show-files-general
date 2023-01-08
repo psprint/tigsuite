@@ -6,9 +6,9 @@ local which=$1 met=$3 obj=$2
 local -aU qa
 
 # Initialize
-ti::util-verify-tigsuite-dir||return 1
-ti::util-verify-cid "$which" $obj||return 1
-ti::util-tigsuite-startup rename "" $which-$obj||return 1
+util/ti::verify-tigsuite-dir||return 1
+util/ti::verify-cid "$which" $obj||return 1
+util/ti::tigsuite-startup rename "" $which-$obj||return 1
 
 preamble-and-files() {
         local tpe=$1 cid=$2 cmd txt

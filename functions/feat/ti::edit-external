@@ -10,8 +10,8 @@ local FROM=$1 PID_=$2 ID OP QUEUE=$TIPID_QUEUE
 local OP=edit-ext-$FROM EDITOR=${EDITOR:-mcedit}
 
 # Initialize
-ti::util-verify-tigsuite-dir||return 1
-ti::util-tigsuite-startup $OP "" "<empty>"||return 1
+util/ti::verify-tigsuite-dir||return 1
+util/ti::tigsuite-startup $OP "" "<empty>"||return 1
 
 if [[ $FROM == features ]]; then
     $EDITOR $TIREGI_FILE

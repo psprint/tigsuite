@@ -19,9 +19,9 @@ elif [[ $FROM == queue ]];then
 fi
 
 # Bootstrap operation
-ti::util-verify-cid $FROM $CID||return 1
-ti::util-verify-tigsuite-dir||return 1
-ti::util-tigsuite-startup new-feature/$FROM Q $FROM-$CID||return 1
+util/ti::verify-cid $FROM $CID||return 1
+util/ti::verify-tigsuite-dir||return 1
+util/ti::tigsuite-startup new-feature/$FROM Q $FROM-$CID||return 1
 
 local -aU cont=(${(@f)"$(<$TIREGI_FILE)"})
 local -aU prev=(${(M)cont:#(#s)$PID/$ID: *}) filtered=(${cont:#(#s)$PID/$ID: *})

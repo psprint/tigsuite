@@ -6,7 +6,7 @@
 local -A Opts
 builtin zparseopts -D -E -A Opts -- -e: || return 1
 
-ti::util-verify-tigsuite-dir||return 1
+util/ti::verify-tigsuite-dir||return 1
 
 local qed=${${${Opts[-e]:-$TIG_EDITOR}:-$EDITOR}:-mcedit}
 (($+commands[$qed]))||qed=mcedit

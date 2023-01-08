@@ -22,7 +22,8 @@ $HOME/.cache/tigsuite}}
     export TIG_SUITE_DIR=$Plugins[TIG_DIR] \
         TIG_SUITE_GL=$Plugins[TIG_DIR]/libexec/ti::global.zsh \
         TICACHE TILOG
-    autoload -z $TIG_SUITE_DIR/functions/(ti::|xz*)*~*~(:tN.)
+    autoload -z $TIG_SUITE_DIR/functions/(ti::|xz*)*~*~(#qN.non:t) \
+            $TIG_SUITE_DIR/functions/*/(ti::|xz*)*~*~(#qN.non:t2)
     (($+functions[xzmsg]))||print -r -- "Warning: ·TigSuite· plugin occurred" \
                                 "problems when loading functions"
 

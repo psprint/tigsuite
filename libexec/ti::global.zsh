@@ -117,12 +117,13 @@ fi
                     add some entries
 
 # Autoload functions
-autoload -z regexp-replace $TIG/functions/(xzmsg|ti::)*~*'~'(#qN.non:t)
+autoload -z regexp-replace $TIG/functions/(xzmsg|ti::)*~*'~'(#qN.non:t) \
+                $TIG/functions/*/(ti::)*~*'~'(#qN.non:t2)
 
 # Export a few local var
-ti::util-verify-tigsuite-dir||return 1
-ti::util-verify-chooser-app||return 1
-ti::util-get-prj-dir||return 1
+util/ti::verify-tigsuite-dir||return 1
+util/ti::verify-chooser-app||return 1
+util/ti::get-prj-dir||return 1
 local -x PDIR=$REPLY PID=$REPLY:t:r
 local -x TIPID_QUEUE=$TICACHE/PID::${(U)PID}.queue
 local -x TIZERO_PAT='(#s)0#(#e)'
