@@ -58,8 +58,14 @@ _tfind_find_index || { _tfind_error_msg && return;}
 qa=(${qa_tag_data//$'\177'*/})
 
 IFS= 
-printf %s\\n $qa|\
-    {while read line; do print $((++qe)).' '$line;done;}|\
+{
+    print ${(r:COLUMNS::–:):-–}
+    print Tags from ${${TAG[file]##$PDIR/}##$PWD/} index file. Enter to open editor on the tag.
+    print ${(r:COLUMNS::–:):-–}
+
+    printf %s\\n $qa|\
+        {while read line; do print $((++qe)).' '$line;done;}
+}|\
         {q="$($TICHOOSE_APP)";ec+=$?;}
 
 qi=${(M)q##<->##}
