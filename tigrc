@@ -3,6 +3,18 @@
 #
 
 ###
+### Ctags support
+###
+
+bind generic x!mt :!make tags
+bind generic x!mc :!make ctags
+bind generic x!tc !zsh -c 'source $TIG_SUITE_GL&&ctags/ti::create-tags c TAGS'
+bind generic x!tz !zsh -c 'source $TIG_SUITE_GL&&ctags/ti::create-tags zsh TAGS'
+bind generic v none 
+bind generic v!tc !zsh -c 'source $TIG_SUITE_GL&&ctags/ti::create-tags c tags'
+bind generic v!tz !zsh -c 'source $TIG_SUITE_GL&&ctags/ti::create-tags zsh tags'
+
+###
 ### Previous commands
 ###
 
