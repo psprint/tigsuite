@@ -32,7 +32,7 @@ fi
 # Bind Enter to print the selected commit ID to error output and exit after
 # that.
 printf %s\\n "bind pager <Enter> <zsh -c 'printf \$0 >&2' %(text)">>!$CONFIG
-printf %s\\n "source $TIG_SUITE_DIR/share/tig-colors.rc">>!$CONFIG
+printf %s\\n "source $TIG_SUITE_DIR/share/tig-pager.rc">>!$CONFIG
 
 # Read all from stdin → array
 local qi="$(<&0)"

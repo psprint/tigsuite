@@ -1,0 +1,4 @@
+color "/^[-–—]+$/" magenta default normal
+color "/^[^·–—]+/" blue default bold
+set pager-view = line-number:no text
+

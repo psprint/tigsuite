@@ -1,0 +1,81 @@
+#!/usr/bin/env zsh
+# Copyright (c) 2022 Sebastian Gniazdowski
+0="${(%):-%x}"
+: ${TIG_SUITE_DIR:=$0:h:h}
+
+local -A TAG
+integer ec qe qi
+local q
+local -a qa_tag_data qa
+
+_tfind_find_index() {
+    local q
+    local -a p
+    # Read tags file
+    p=( (../)#TAGS(N) )
+    TAG[file]=${${(On)p}[1]}
+    [[ -f ./TAGS ]] && TAG[file]=$PWD/TAGS
+    if [[ -n $TAG[file] ]]; then
+        TAG[git-or-project]=${${TAG[file]:a}:h:t}
+    else
+        TAG[git-or-project]="<unknown>"
+    fi
+
+    # Pre-process found index
+    TAG[file-pp]=${TAG[file]/TAGS/.TAGS}.z
+    if [[ -n $TAG[file] && -f $TAG[file] && ( ! -f $TAG[file-pp] || $TAG[file] -nt $TAG[file-pp]) ]]
+    then
+        local sed_
+        (($+commands[sed]))&&sed_=sed
+        (($+commands[gsed]))&&sed_=gsed
+        (($+commands[$sed_]))||{_tfind_error_msg&&return;}
+         # Generate simplified file – append the filename at each line,
+        # so that it's not only at the preamble line
+        command $sed_ -r -n $'/^\x0c$/ { n; s/,[^,]*$//;s/^/\x02/; h; d;}; G; y/\\n/,/; p' $TAG[file] >! $TAG[file-pp]
+    fi
+
+    # Read index, and as index is found, establish git main dir for it
+    if [[ -n $TAG[file] && -f $TAG[file-pp] ]]; then
+        qa_tag_data=( ${"${(@f)"$(<${TAG[file-pp]})"}"##[[:space:]]##} )
+        # Cleanup functions and their preambles
+        qa_tag_data=( ${qa_tag_data[@]/(#b)(\([^\)]#\))[[:space:]]#[\{]*($'\x7f')/$match[1]$match[2]} )
+        qa_tag_data=( ${qa_tag_data[@]/(#b)[[:space:]]\#*($'\x7f')/$match[1]} )
+        local outside_git="${PWD%/${$(git rev-parse --quiet --show-prefix 2>/dev/null)%/}}"
+        if [[ -d $outside_git && -n ${${(M)PWD##$outside_git}##$HOME} ]]; then
+            TAG[git-or-project]=$outside_git:t
+            TAG[repo-dir]=$outside_git
+        else
+            TAG[git-or-project]=$TAG[file]:h:t
+            TAG[repo-dir]=$TAG[file]:h
+        fi
+        return 0
+    fi
+    return 1
+}
+
+# Find the index to operate on, git dir, etc.
+_tfind_find_index || { _tfind_error_msg && return;}
+qa=(${qa_tag_data//$'\177'*/})
+
+IFS= 
+printf %s\\n $qa|\
+    {while read line; do print $((++qe)).' '$line;done;}|\
+        {q="$($TICHOOSE_APP)";ec+=$?;}
+
+qi=${(M)q##<->##}
+q=$qa_tag_data[qi]
+
+if [[ $q = (#b)[^$'\177']#$'\177'[^$'\1']#$'\1'([^$'\2']#)$'\2'(*) ]]; then
+    local taglinebyte=${match[1]} tagfile
+    local tagline=${taglinebyte%%,*}
+
+    # CD vs absolute path
+    if [[ $match[2] != /* && -n $TAG[repo-dir] ]]; then
+        tagfile=$TAG[repo-dir]/$match[2]
+    else
+        tagfile=$match[2]
+    fi
+    [[ ! -f $tagfile && -f $match[2] ]] && tagfile=$match[2]
+    util/ti::get-editor||return 1
+    "$REPLY" +$tagline $tagfile
+ fi

@@ -25,7 +25,7 @@ fi
 # No error?
 if ((ec==0));then
     timsg %B{41}TAGS{39} file created without errors. %f%bIt has{39} \
-        ${${(M)$(wc -l $fmt)##<->##}// ##/ }%f symbols.
+        ${${(M)$(grep -Ec '^[[:alnum:]]+' $fmt)##<->##}// ##/ }%f symbols.
 fi
 
 # Exit code > 0?
