@@ -6,17 +6,12 @@
 ### Stash support
 ###
 
-bind generic Zpa !zsh -c 'source $TIG_SUITE_GL&&patch/ti::apply-stash ext %(commit)'
-bind generic ZRpa !zsh -c 'printf "\\\\n"; OUTPUT="$(command git show -m -p %(commit))" || \
-            { printf "\\n\\e[1;31m–– Pliki niezmienione (błąd odzczytu) ––\\e[0m\\n"; exit ; }; \
-            printf "%s\\n" "$OUTPUT" | tee -a /tmp/tig.log | \
-            if patch -R -p1; then \
-                printf "\\nNałożono \\e[1;44;33m<ODWROTNIE>\\e[0m zachowek \\e[1;35m%(stash)\\e[0m przy użyciu programu \\e[1;34mpatch\\e[0m\\n"; \
-            else \
-                printf "\\n\\e[1;31mKod błędu: \\e[0;31m$?\\e[0m\\n"; \
-                printf "\\e[1;31m–– Nieudane pachowanie. Pewne pliki mogły zostać niezmienione ––\\e[0m\\n"; \
-            fi'
-
+# Apply via `patch` tool
+bind generic Zpa !zsh -c 'source $TIG_SUITE_GL&&patch/ti::apply-stash ext %(commit) %(stash)'
+# Apply via `patch` tool, REVERSED
+bind generic ZRpa !zsh -c 'source $TIG_SUITE_GL&&patch/ti::apply-stash extrev %(commit) %(stash)'
+# Apply using `git stash apply`
+bind generic Za !zsh -c 'source $TIG_SUITE_GL&&patch/ti::apply-stash git %(commit) %(stash)'
 
 ###
 ### Ctags support
