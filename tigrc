@@ -3,6 +3,12 @@
 #
 
 ###
+### Various
+###
+
+bind generic <Ctrl-Q> >zsh -c 'TIG_SCRIPT=<(print :bind generic q view-close) tig grep "%(prompt Searched pattern for grep view: )"'
+
+###
 ### Stash support
 ###
 
@@ -12,6 +18,36 @@ bind generic Zpa !zsh -c 'source $TIG_SUITE_GL&&patch/ti::apply-stash ext %(comm
 bind generic ZRpa !zsh -c 'source $TIG_SUITE_GL&&patch/ti::apply-stash extrev %(commit) %(stash)'
 # Apply using `git stash apply`
 bind generic Za !zsh -c 'source $TIG_SUITE_GL&&patch/ti::apply-stash git %(commit) %(stash)'
+
+# Reset stash name to a new one
+bind stash Zres +zsh -c 'git stash drop %(stash); git stash store -m"%(prompt New stash name: )" %(commit)'
+
+# Stash save keeping index
+bind generic Zz +git stash --keep-index
+# Stash only highlighted file
+bind generic Zf +git stash push --keep-index -- "%(file)"
+# Stash interactively for 1 file
+bind generic Zif +git stash push -p -- "%(file)"
+# Stash interactively
+bind generic Ziz +git stash push -p
+# Stash everything
+bind generic ZZZ +git stash
+# Stash keeping index and prompting for message
+bind generic Zmz +git stash --keep-index -m "%(prompt Stash name: )"
+# The same interactively
+bind generic Zimz +git stash push -p -m "%(prompt Stash name: )"
+
+# Different method of generating patch for `patch` command
+bind generic Z1P !zsh -c 'source $TIG_SUITE_GL&&patch/ti::apply-stash extoth1 %(commit) %(stash) "%(file)"'
+
+# The same, but for whole saved diff (all files)
+bind generic ZP !zsh -c 'source $TIG_SUITE_GL&&patch/ti::apply-stash extoth %(commit) %(stash) "%(file)"'
+
+# Reverse Z1P
+bind generic ZR1P !zsh -c 'source $TIG_SUITE_GL&&patch/ti::apply-stash extothrev1 %(commit) %(stash) "%(file)"'
+
+# Reverse ZP
+bind generic ZRP !zsh -c 'source $TIG_SUITE_GL&&patch/ti::apply-stash extothrev %(commit) %(stash) "%(file)"'
 
 ###
 ### Ctags support
