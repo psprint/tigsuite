@@ -26,7 +26,7 @@ timsg %B{135}· {41}$TINICK{135} root directory path: {69}$TIG_SUITE_DIR{135}
 
 # Chooser program
 timsg %B{135}· Chooser {33}TUI{135} app to pick °{27}features{135}° to \
-    open them: %U{204}${TICHOOSER_APP:-(none)}
+    open them: %U{204}${TICHOOSE_APP:-(none)}
 
 # Commit
 if [[ $CID == commit* && $CID != commit-0# ]];then

@@ -6,7 +6,7 @@
 ### Previous commands
 ###
 
-bind generic xex >!zsh  -c 'rm -f $TIG_SCRIPT;source $TIG_SUITE_GL&&feat/ti::run-task'
+bind generic exe >!zsh  -c 'rm -f $TIG_SCRIPT;source $TIG_SUITE_GL&&feat/ti::run-task'
 
 ###
 ### Features

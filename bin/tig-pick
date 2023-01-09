@@ -15,23 +15,26 @@
 
 set -e
 
-CONFIG=$(mktemp)
-trap "command rm -f '$CONFIG'" EXIT
+typeset -g CONFIG=$(mktemp)
+trap "command rm -f $CONFIG" EXIT 
+trap "command rm -f $CONFIG; return 3" INT
 
 # Prepare config file: source user config, if present
+local XDG
 if [[ -n $TIGRC_USER ]]; then
 	print "source $TIGRC_USER" >>! "$CONFIG"
 elif [[ -f $HOME/.tigrc ]]; then
 	print "source $HOME/.tigrc" >>! "$CONFIG"
+elif [[ -f ${XDG::=${XDG_CONFIG_HOME:-$HOME/.config}/tig/tigrc} ]]; then
+	print "source $XDG">>!"$CONFIG"
 fi
 
 # Bind Enter to print the selected commit ID to error output and exit after
 # that.
-printf %s\\n "bind pager <Enter> <zsh -c 'printf \$0 >&2' %(text)" \
-    'color "/—+/" magenta default normal' \
-    'color "/^[^·]+/" blue default bold' \
-  >>! "$CONFIG"
+printf %s\\n "bind pager <Enter> <zsh -c 'printf \$0 >&2' %(text)">>!$CONFIG
+printf %s\\n "source $TIG_SUITE_DIR/share/tig-colors.rc">>!$CONFIG
 
+# Read all from stdin → array
 local qi="$(<&0)"
 local -a qa=(${(f@)qi})
 
@@ -46,5 +49,6 @@ export TIGRC_USER=$CONFIG
 } < <(printf %s\\n $qa)
 
 local qe=$(print "$stderr" | tail -n1)
+# Repair long lines
 qe=${${(M)qa:#$qe*}[1]}
 print -r -- "$qe"

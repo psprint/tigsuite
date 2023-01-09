@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 0="${(%):-%x}"
-: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+: ${TIG_SUITE_DIR:=$0:h:h}
 
 # Input/options
 local -A Opts
@@ -16,14 +16,16 @@ local -a tasks=(${(M)${(@f)"$(<$CFG)"}:#(\!|exec[[:space:]]##)*})
 integer ret
 
 {
-    print Tig saved commands:
-    printf %s\\n $tasks
-}|{qi="$($TICHOOSER_APP)";ret+=$?;}
+    print ${(r:COLUMNS::–:):-–}
+    print Tig saved pager-view commands:
+    print ${(r:COLUMNS::–:):-–}
+    printf ·%s\\n $tasks
+}|{qi="$($TICHOOSE_APP)";ret+=$?;}
 
 local qtmp=$TICACHE/tig-script
 cat >$qtmp <<end
 :bind generic ex :echo "In a new \`tig\` from previous \`ex\` command, quit first"
-:$qi
+:${qi#·}
 end
 
 #(($+Opts[--exec]))&&TIG_SCRIPT=$qtmp exec tig

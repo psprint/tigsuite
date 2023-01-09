@@ -28,15 +28,15 @@ fi
 if ((!$#ID));then
     util/ti::verify-chooser-app||return 1
     {
-        print ${(r:COLUMNS::—:):-—}
+        print ${(r:COLUMNS::–:):-–}
         print Below are the configured °features°, click to open.
         print 1st column is: PID/FeatID » PID is project ID \
                 and FeatID is the feature\'s NAME.
-        print ${(r:COLUMNS::—:):-—}
+        print ${(r:COLUMNS::–:):-–}
         print "${(r:3:: :):-}"PID/FeatID"${(r:25:: :):-}"Files
-        print ${(r:COLUMNS::—:):-—}
+        print ${(r:COLUMNS::–:):-–}
         printf ·%s\\n ${(on)${(@f)"$(<$TIREGI_FILE)"}/ Q:\"[^\"]##\"}
-    }|{q="${$($TICHOOSER_APP ${${(M)TICHOOSER_APP:#fzf}:+--tac})#·}";ret+=$?;}
+    }|{q="${$($TICHOOSE_APP ${${(M)TICHOOSE_APP:#fzf}:+--tac})#·}";ret+=$?;}
 else
     qa=(${(@)${(M)cont:#[^/]##/$ID:*}/ Q:\"[^\"]##\"/})
     q=$qa[1]
@@ -71,7 +71,10 @@ if [[ $q == (#b)([^/]##/[^/]##):((([[:space:]]##\"[^\"]##\")##)) ]];then
                 timsg {41}Found dir of %BPID:$pid_feat:h%b: {39}$pdir\\n\
 {33}Opening \$EDITOR=%B{27}$EDITOR%f%b…
                 util/ti::get-editor||return 1
-                command $REPLY ${qa/(#s)/$pdir/}
+                (
+                    builtin cd -q -- $pdir
+                    command "$REPLY" $qa
+                )
             fi
             break
         fi

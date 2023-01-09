@@ -13,22 +13,23 @@ util/ti::tigsuite-startup rename "" $which-$obj||return 1
 preamble-and-files() {
         local tpe=$1 cid=$2 cmd txt
         print ${(r:COLUMNS::—:):-—}
-        print -n Showing files gathered for current PWD project
+        print -n Showing files
         if [[ $tpe == commit ]];then
-            print \ \($PID\) in the commit: ·$cid[1,7]
+            print \ \(current PWD project: $PID\) in the commit: ·$cid[1,7]
             cmd=enc
-            txt="commit ·$cid[1,7]"
+            txt="in commit ·$cid[1,7]"
             {qa=(${(@f)"$(command git diff --name-only $cid~..$cid)"});} TIO
         fi
         if [[ $tpe == queue ]];then
-            print \ \($PID\) in the queue file:\\n·$TIPID_QUEUE
+            print gathered for current PWD project\ \($PID\) in \
+                queue file:\\n·$TIPID_QUEUE
             txt=accumulator/queue-file
             cmd=enq
             {qa=(${(@f)"$(<$TIPID_QUEUE)"});} TIO
         fi
         print To convert it into a °feature° object press \"$cmd\" \
             in TIG interface
-        print ${(r:COLUMNS::—:):-—}
+        print ${(r:COLUMNS::–:):-–}
         print \\nFiles in the $txt:\\n
         (($#qa))||qa=("Error: no data obtained")
         printf ·%s\\n $qa
@@ -44,6 +45,11 @@ fi
 if [[ $which == commit ]];then
     local -a arg=($which $obj)
 fi
-preamble-and-files $arg|tig
+
+local qo=${${:-"$(preamble-and-files $arg|$TICHOOSE_APP)"}#·}
+integer ec
+while [[ -f $qo && $ec -eq 0 ]];do
+    command cat $qo|{qo=${${:-"$($TICHOOSE_APP)"}#·};ec=$?;}
+done
  
  # vim:ft=zsh:tw=80:sw=4:sts=4:et:foldmarker=[[[,]]]
