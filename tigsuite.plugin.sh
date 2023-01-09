@@ -55,7 +55,7 @@ Provide it by setting ZERO to it.\\n"
     export TIG_SUITE_DIR TIG_SUITE_GL TICACHE TILOG TICHOOSE_APP
 
     # Use config
-    local qc qct=${XDG_CONFIG_HOME:-$HOME/.config}/tig/tigrc
+    local qc qct=${XDG_CONFIG_HOME:-$HOME/.config}/tig/config
     if [[ -n ${TIGRC_USER##$TIG_SUITE_DIR*} ]]; then
         qc=$TIGRC_USER
     elif [[ -f $qct  ]]; then
