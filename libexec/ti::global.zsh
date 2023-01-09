@@ -21,10 +21,10 @@ builtin setopt extendedglob warncreateglobal typesetsilent noshortloops \
 local -x TINICK=TigSuite TINICK_=TigSu
 typeset -gA Plugins
 
-# FUNCTION: timsg [[[
+# FUNCTION: tigmsg [[[
 # An wrapping function that looks for backend outputting function
 # and uses a verbatim `print` builtin otherwise.
-\timsg_()
+\tigmsg_()
 {
     if [[ -x $TIG_SUITE_DIR/functions/xzmsg ]]; then
         $TIG_SUITE_DIR/functions/xzmsg "$@"
@@ -36,7 +36,7 @@ typeset -gA Plugins
         builtin print -- ${@${@//(%f|%B|%F|%f)/}//\{[^\}]##\}/}
     fi
 }
-alias timsg='noglob timsg_ $0:t\:$LINENO'
+alias tigmsg='noglob tigmsg_ $0:t\:$LINENO'
 # ]]]
 
 # Run as script? ZSH_SCRIPT is a Zsh 5.3 addition
@@ -52,7 +52,7 @@ if [[ $0 != */ti::global.zsh || ! -f $0 ]]; then
         TIG_SUITE_DIR=$Plugins[TIG_DIR]
     else
         local -a q=($Plugins[TIG_DIR] $TIG_SUITE_DIR $0:h:h)
-        timsg {204}Error:%f couldn\'t locate {39}$TINICK\'s%f source \
+        tigmsg {204}Error:%f couldn\'t locate {39}$TINICK\'s%f source \
             directory (tryied in dirs: {27}${(j:%f,{27}:)q}%f), cannot \
             continue.
         return 1
@@ -97,7 +97,7 @@ alias -g TIO="&>>!$TILOG"
 
 # No config dir found ?
 if [[ ! -d $TIREGI_FILE:h ]]; then
-    timsg -h {204}Error:%f Couldn\'t setup config directory \
+    tigmsg -h {204}Error:%f Couldn\'t setup config directory \
                     at %B%F{39}$QREGI_FILE:h%b%f, exiting…
     return 1
 fi
@@ -105,14 +105,14 @@ fi
 # No config ?
 if [[ ! -f $TIREGI_FILE ]]; then
     command touch $TIREGI_FILE
-    [[ ! -f $TIREGI_FILE ]]&&{timsg -h %U{204}Error:%f couldn\'t create \
+    [[ ! -f $TIREGI_FILE ]]&&{tigmsg -h %U{204}Error:%f couldn\'t create \
                 the registry-file %B{39}$QREGI_FILE%f%b, please addapt \
                 file permissions or check if disk is full.
                 return 4}
 fi
 
 # Config empty?
-[[ ! -s $TIREGI_FILE ]]&&timsg -h %U{204}Warning:%f features registry-file \
+[[ ! -s $TIREGI_FILE ]]&&tigmsg -h %U{204}Warning:%f features registry-file \
                     \({41}$QREGI_FILE%F\) currently empty, need to \
                     add some entries
 
@@ -133,7 +133,7 @@ for q in $TIG/libexec/ti::*.zsh~*/ti::global.zsh(N.); do
     builtin source $q
     integer ret=$?
     if ((ret));then
-        timsg -h %U{204}Error:%f error %B{174}$ret%f%b when sourcing \
+        tigmsg -h %U{204}Error:%f error %B{174}$ret%f%b when sourcing \
             sub-file: {39}$q:t%f…
         return 1
     fi

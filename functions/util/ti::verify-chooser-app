@@ -14,7 +14,7 @@ REPLY=$TICHOOSE_APP
 
 if [[ ! -x =$TICHOOSE_APP ]];then
     local -Ua q=($TMP tig-pick fzf fzy)
-    timsg -h %B{204}Error:%f%b no chooser app found, tried one of:\\n\
+    tigmsg -h %B{204}Error:%f%b no chooser app found, tried one of:\\n\
 %B{39}·${(~j.%f%b, {39}%B·.)q}%f%b,\\nand currently \
 ${${TICHOOSE_APP:+set %B{41}TICHOOSE_APP%f%b to: %B{39}$TICHOOSE_APP%f%b}:-\
 %B{41}TICHOOSE_APP%f%b is unset)}

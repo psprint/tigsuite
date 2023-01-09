@@ -11,7 +11,7 @@ local -a qa
 [[ -n $qc ]]&&qa=(${(@z)${(PA@)qc}})
 
 # dir, QREGI_FILE 
-timsg %B{204}Initial status{135} of the operation ≈ {39}$op{135}:\\n\
+tigmsg %B{204}Initial status{135} of the operation ≈ {39}$op{135}:\\n\
 {135}· {41}PID{135} – the present PWD project-ID/tag:\
     «[227]{27}${(U)PID}{135}%k»\\n\
 %B{135}· Project dir: %U{39}$PDIR%u{135}\\n\
@@ -19,13 +19,13 @@ timsg %B{204}Initial status{135} of the operation ≈ {39}$op{135}:\\n\
 · Accumulator/queue-file: {39}$TIPID_QUEUE:t{135} of project {41}$PID
 
 # ID
-[[ -n $ID ]]&&timsg %B{135}· The name of the °{41}feature-ID{135}{135}° is: [227]{27}${ID}{135}%k°
+[[ -n $ID ]]&&tigmsg %B{135}· The name of the °{41}feature-ID{135}{135}° is: [227]{27}${ID}{135}%k°
 
 # TIG_SUITE_DIR
-timsg %B{135}· {41}$TINICK{135} root directory path: {69}$TIG_SUITE_DIR{135}
+tigmsg %B{135}· {41}$TINICK{135} root directory path: {69}$TIG_SUITE_DIR{135}
 
 # Chooser program
-timsg %B{135}· Chooser {33}TUI{135} app to pick °{27}features{135}° to \
+tigmsg %B{135}· Chooser {33}TUI{135} app to pick °{27}features{135}° to \
     open them: %U{204}${TICHOOSE_APP:-(none)}
 
 # Commit
@@ -33,11 +33,11 @@ if [[ $CID == commit* && $CID != commit-0# ]];then
     CID=${CID#commit-}
     local pre='%B{135}· {135}Commit hovered when leaving {207}%UTIG%u{135}:'
     if util/ti::verify-cid -q $CID; then
-        timsg $pre {41}$CID[1,7]
+        tigmsg $pre {41}$CID[1,7]
     elif [[ $CID == 0# ]];then
-        timsg $pre {207}NO HOVERED COMMIT
+        tigmsg $pre {207}NO HOVERED COMMIT
     else
-        timsg $pre {207}INCORRECT:{174}$CID
+        tigmsg $pre {207}INCORRECT:{174}$CID
     fi
 fi
  

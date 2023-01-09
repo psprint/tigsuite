@@ -37,7 +37,7 @@ preamble-and-files() {
 
 if [[ $which == queue ]];then
     if [[ ! -s $TIPID_QUEUE ]];then
-        timsg -h %B{204}Notice:%f%b queue is empty, nothing to display…
+        tigmsg -h %B{204}Notice:%f%b queue is empty, nothing to display…
         return 1
     fi
     local -a arg=($which)

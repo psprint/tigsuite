@@ -17,10 +17,10 @@ local -a cont=(${(@f)"$(<$TIREGI_FILE)"}) qa
 local -a prev=(${(M)cont:#(#s)$PID/$ID: *}) filtered=(${cont:#(#s)$PID/$ID: *})
 integer ret update
 
-error-msg(){local -h ret=$1 LINENO=$3 0=$2; timsg -h %U{204}Warning:%f%b error %B{174}$1%f%b occured;}
+error-msg(){local -h ret=$1 LINENO=$3 0=$2; tigmsg -h %U{204}Warning:%f%b error %B{174}$1%f%b occured;}
 
 if (($#ID<3&&$#ID>0));then 
-    timsg -h %U{204}Error:%f Too short feature name given, must be of len \>\=3
+    tigmsg -h %U{204}Error:%f Too short feature name given, must be of len \>\=3
     return 1
 fi
 
@@ -40,7 +40,7 @@ if ((!$#ID));then
 else
     qa=(${(@)${(M)cont:#[^/]##/$ID:*}/ Q:\"[^\"]##\"/})
     q=$qa[1]
-    [[ -n $q ]]||{timsg %B{204}Error:%f%b couldn\'t find °{27}feature%f° \
+    [[ -n $q ]]||{tigmsg %B{204}Error:%f%b couldn\'t find °{27}feature%f° \
         with {208}ID=%B{41}$ID%b%f, exiting…
         ret+=1
     }
@@ -54,9 +54,9 @@ fi
 if [[ $q == (#b)([^/]##/[^/]##):((([[:space:]]##\"[^\"]##\")##)) ]];then
     pid_feat=$match[1] rest=$match[3] ID=$match[1]:t
     qa=("${(@Q)${(@Z+Cn+)${q##$match[1]:[[:space:]]#}}}")
-    ((!$#qa))&&{timsg -h %B{204}Error:%f%b couldn\'t read °{27}feature\'s%f° \
+    ((!$#qa))&&{tigmsg -h %B{204}Error:%f%b couldn\'t read °{27}feature%f°\'s \
                     data, entry is corrupted; return 1;}
-    timsg %B{204}NOTICE:%f%b files of °{27}feature%f°{135} ID=«%B{204}${match[1]##*/}\
+    tigmsg %B{204}NOTICE:%f%b files of °{27}feature%f°{135} ID=«%B{204}${match[1]##*/}\
 %f%b» are:\\n- {39}·${(~j.%f,\n- {39}·.)qa}
 
     # Look up the project's directory
@@ -68,7 +68,7 @@ if [[ $q == (#b)([^/]##/[^/]##):((([[:space:]]##\"[^\"]##\")##)) ]];then
                 [[ -d $pdir ]]
                 return $?
             else
-                timsg {41}Found dir of %BPID:$pid_feat:h%b: {39}$pdir\\n\
+                tigmsg {41}Found dir of %BPID:$pid_feat:h%b: {39}$pdir\\n\
 {33}Opening \$EDITOR=%B{27}$EDITOR%f%b…
                 util/ti::get-editor||return 1
                 (

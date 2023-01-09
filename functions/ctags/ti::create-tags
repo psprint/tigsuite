@@ -18,19 +18,19 @@ fi
 
 # Unknown language requested?
 if ((ec<0));then
-    timsg -h %B{208}Error:{137} unknown language {41}$tpe{137}, exiting…
+    tigmsg -h %B{208}Error:{137} unknown language {41}$tpe{137}, exiting…
     return 1
 fi
 
 # No error?
 if ((ec==0));then
-    timsg %B{41}TAGS{39} file created without errors. %f%bIt has{39} \
+    tigmsg %B{41}TAGS{39} file created without errors. %f%bIt has{39} \
         ${${(M)$(grep -Ec '^[[:alnum:]]+' $fmt)##<->##}// ##/ }%f symbols.
 fi
 
 # Exit code > 0?
 if ((ec>0));then
-    timsg -h %B{208}Error:{137} Non 0-exit code ({208}$ec{137}), exiting…
+    tigmsg -h %B{208}Error:{137} Non 0-exit code ({208}$ec{137}), exiting…
     return 1
 fi
 

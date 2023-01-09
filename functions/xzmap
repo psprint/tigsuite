@@ -11,20 +11,20 @@ builtin zparseopts -D -E -A Opts -- || return 1
 local f=$1
 shift
 
-builtin type timsg &>$TILOG||alias timsg=xzmsg
+builtin type tigmsg &>$TILOG||alias tigmsg=xzmsg
  
 [[ -z $f ]]&&{
-    timsg -h {208}Error:{137} Missing first arg: runnable name/path
+    tigmsg -h {208}Error:{137} Missing first arg: runnable name/path
     return 1
 }
 
 if ! type $f &>$TILOG; then
-    timsg -h {208}Error:{137} Couldn\'t find runnable: {33}$f
+    tigmsg -h {208}Error:{137} Couldn\'t find runnable: {33}$f
     return 3
 fi
 
 (($# <= 0))&&{
-    timsg -h {208}Error:{137} Missing arguments: the objects to run ·{33}$f\
+    tigmsg -h {208}Error:{137} Missing arguments: the objects to run ·{33}$f\
         {137}· on
     return 1
 }

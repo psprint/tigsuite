@@ -28,30 +28,30 @@ local -aU prev=(${(M)cont:#(#s)$PID/$ID: *}) filtered=(${cont:#(#s)$PID/$ID: *})
 integer ret update
 
 if ((!$#Q));then
-    [[ $FROM == commit ]]&&timsg -h %U%B{204}Error:%f%b Commit nr.:\
+    [[ $FROM == commit ]]&&tigmsg -h %U%B{204}Error:%f%b Commit nr.:\
         %B{39}$CID[1,7]%f%b doesn\'t change any files, or is incorrect, exiting…
-    [[ $FROM == queue ]]&&timsg -h %U%B{208}Error:%f%b accumulator/queue-file \
+    [[ $FROM == queue ]]&&tigmsg -h %U%B{208}Error:%f%b accumulator/queue-file \
         of project %B{39}$PID%f%b is empty. You can add some files by \
         {41}Fsvf%f shortcut in %B{208}TIG interface%f%b.
     return 1
 fi
 if ((!$#ID));then 
-    timsg -h %U{204}Error:%f Please enter the feature NAME in %B{204}TIG\
+    tigmsg -h %U{204}Error:%f Please enter the feature NAME in %B{204}TIG\
         interface%f%b, on the prompt that opens
     return 1
 fi
 if (($#ID<3));then 
-    timsg -h %U{204}Error:%f Too short feature name given, must be of len \>\=3
+    tigmsg -h %U{204}Error:%f Too short feature name given, must be of len \>\=3
     return 1
 fi
 if (($#prev>=1));then
-        timsg -h %B{204}Warning:%f%b the given new \
+        tigmsg -h %B{204}Warning:%f%b the given new \
             °{27}feature-ID%f°=\"%B{39}${(U)ID}%f%b\" \
             already exists in the registry-file: \
             %B{41}$QREGI_FILE%f%b… %B\\n\\nUpdate it? {204}[Yy/Nn]?
         if read -q -E -e;then
             update=1
-            timsg \\n%B{41}Waiting {39}3{41} seconds to stop the edition \
+            tigmsg \\n%B{41}Waiting {39}3{41} seconds to stop the edition \
                 {204}(Ctrl-C){41}…
             sleep 3
             command mv -f $TIREGI_FILE $TIREGI_FILE\~ TIO
@@ -61,7 +61,7 @@ if (($#prev>=1));then
                 ret+=$?
             fi
         else
-            timsg \\n{204}Warning:%f exiting doing nothing…
+            tigmsg \\n{204}Warning:%f exiting doing nothing…
             exit 1
         fi
 fi
@@ -75,17 +75,17 @@ repeat 1 { builtin print -r -- ${cont:+$'\n'}"$PID/$ID:" Q:"${(qqq)PDIR}" \
 ret+=$?
 
 if ((ret==0));then
-    timsg \\nFeature %B{41}$ID%f%b succesfully \
+    tigmsg \\nFeature %B{41}$ID%f%b succesfully \
         ${${${update:#0}:+updated}:-created} and saved \
         \(to: {39}$QREGI_FILE%f\). \\nIt contains files: \\n- \
             \{39}${(j:%f,\n- {39}:)Q}%f.
     if [[ $FROM == queue ]];then
         builtin print -n -- >! $TIPID_QUEUE TIO
-        timsg {204}Notice:{135} the file queue of project \
+        tigmsg {204}Notice:{135} the file queue of project \
         %B{41}$PID{135}%b has been cleared (file {39}$TIPID_QUEUE{135} \
 has been truncated)
     fi
  else
-    timsg -h %U{204}Warning:%f%b error %B{174}$ret%f%b occured \
+    tigmsg -h %U{204}Warning:%f%b error %B{174}$ret%f%b occured \
         when writing to disk, feature %B{41}$ID%f%b could be not saved
 fi
