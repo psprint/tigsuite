@@ -19,7 +19,7 @@ integer ret
     print ${(r:COLUMNS::–:):-–}
     print Tig saved pager-view commands:
     print ${(r:COLUMNS::–:):-–}
-    printf ·%s\\n $tasks
+    printf ·%s\\n ${(Oa)tasks}
 }|{qi="$($TICHOOSE_APP)";ret+=$?;}
 
 local qtmp=$TICACHE/tig-script
