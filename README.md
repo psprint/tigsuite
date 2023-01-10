@@ -2,7 +2,7 @@
 
 ## Stash support
 
-### Keys exe
+### Keys: exe
 Execute one of past ":!…" or ":exec …" commands after choosing one from a TUI like `tig` itself or `fzf`, etc.
 
 ![past commands](https://raw.githubusercontent.com/psprint/tigsuite/main/img/past-commands.png)
