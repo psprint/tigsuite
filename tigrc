@@ -7,8 +7,8 @@
 ###
 
 bind generic <Ctrl-E> >zsh -c 'TIG_SCRIPT=<(print :bind generic q view-close) tig grep "%(prompt Searched pattern for grep view: )"'
-bind pager o !zsh -c '$TIG_SUITE_DIR/bin/make-line-open.zsh $0' %(text)
-bind pager E !zsh -c '$TIG_SUITE_DIR/bin/make-line-open.zsh $0' %(text)
+bind pager o !zsh -c '$TIG_SUITE_DIR/bin/open.zsh $0' %(text)
+bind pager E !zsh -c '$TIG_SUITE_DIR/bin/open.zsh $0' %(text)
 
 ###
 ### Stash support
