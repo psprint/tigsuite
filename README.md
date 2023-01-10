@@ -90,8 +90,9 @@ The same as `x!tz`, but with Vim-style `tags` index file.
 Runs the `$EDITOR` on current file and line. The same as original `e` key.
 
 ## Support for °features°
-Features are named groups of files, which can be opened in editor, by picking
-up in tig:
+One often needs to open a group of files that associate with the feature that
+one works on. DIfferent feature ↔ different group of files. TigSuite provides
+a support for this — °features° are named groups of files, which can be opened in editor, by picking up in tig:
 
 ![features](https://raw.githubusercontent.com/psprint/tigsuite/main/img/features.png)
 
