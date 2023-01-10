@@ -95,9 +95,14 @@ up in tig:
 
 ![features](https://raw.githubusercontent.com/psprint/tigsuite/main/img/features.png)
 
-or by any other tool like `fzf`. Set `$TICHOOSE_APP` to change from the default (`tig`).
+or by any other tool like `fzf`. Set `$TICHOOSE_APP` to change from the default (`tig`). It's possible to create one from:
+- commit – all files changed by commit become a °feature°,
+- accumulator/queue – all files added to a side-buffer become a °feature°;
+  you can add single files to it, or files of commit, or files from the
+  current tree of files, etc.
 
 ### Keys: equ
+
 ### Keys: efe
 ### Keys: esq
 ### Keys: esc
