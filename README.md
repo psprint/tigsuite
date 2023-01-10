@@ -1,1 +1,45 @@
-# tig-suite
+# Tig Suite
+### Keys exe
+Execute one of past ":!…" or ":exec …" commands after choosing one from a TUI like `tig` itself or `fzf`, etc.
+
+### Keys <Ctrl-Q>
+### Keys Zpa
+### Keys ZRpa
+### Keys Za
+### Keys Zz
+### Keys Zf
+### Keys Zif
+### Keys Ziz
+### Keys ZZZ
+### Keys Zmz
+### Keys Zimz
+### Keys Z1P
+### Keys ZP
+### Keys ZR1P
+### Keys ZRP
+### Keys x!b
+### Keys x!mt
+### Keys x!mc
+### Keys x!tc
+### Keys x!tz
+### Keys v
+### Keys v!tc
+### Keys v!tz
+### Keys e
+### Keys ed
+### Keys equ
+### Keys efe
+### Keys esq
+### Keys esc
+### Keys enc
+### Keys enq
+### Keys esvt
+### Keys esvT
+### Keys eqe
+### Keys esvf
+### Keys esvF
+### Keys esvc
+### Keys eopm
+### Keys eope
+### Keys erem
+### Keys eree
