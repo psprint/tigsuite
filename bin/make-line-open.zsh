@@ -13,7 +13,7 @@ function log()
         else
             print -Pr -- %B%F{174}'\\'%F{69}$l%F{174}'\\' %F{40}Opening%F{69}: %F{27}$open%F{14}:%F{174}$l%f%b on $time | tee -a $LOG_DIR/open.log
         fi
-        sleep 3
+        sleep 1
 }
 
 function find-matches()
@@ -32,11 +32,16 @@ msg()
 
 edit()
 {
-    $EDITOR ${2:++${(M)2##<->##}} $1
+    local que=$EDITOR
+    (($+commands[$que]))||que=mcedit
+    (($+commands[$que]))||que=emacs
+    (($+commands[$que]))||que=micro
+    (($+commands[$que]))||que=vim
+    (($+commands[$que]))||{print -P -- %B%F{135}Couldn\'t find editor, please \
+        set {208}\$EDITOR{135}, exiting…;return 1;}
+ 
+    $que ${2:++${(M)2##<->##}} $1
 }
-
-[[ -f src/mcedit ]] && EDITOR="src/mcedit"
-[[ -z $EDITOR ]] && EDITOR=mcedit
 
 if [[ $1 == (#b)*(([[:space:]]##)|(#s))([^[:space:]]##):(#B)(:(#b)([^[:space:]]##)|)([[:space:]]##|(#e)) || $1 == (#b)[[:space:]]#((([^:]##))):([0-9]##|):* ]]; then
     find-matches $match[3]:t || { msg $match[3]:t 1;}
