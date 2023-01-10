@@ -40,7 +40,7 @@ edit()
     (($+commands[$que]))||{print -P -- %B%F{135}Couldn\'t find editor, please \
         set {208}\$EDITOR{135}, exiting…;return 1;}
  
-    $que ${2:++${(M)2##<->##}} $1
+    command "$que" ${${(M)2##(#m)<->##}:+$MATCH} $1
 }
 
 if [[ $1 == (#b)*(([[:space:]]##)|(#s))([^[:space:]]##):(#B)(:(#b)([^[:space:]]##)|)([[:space:]]##|(#e)) || $1 == (#b)[[:space:]]#((([^:]##))):([0-9]##|):* ]]; then
@@ -56,6 +56,17 @@ else
             reply=( $f )
             log "$f"
             edit "$f"
+        elif [[ $f == ([^\$/\\:=+\#[:space:]]##|(#s))(#b)[[:space:]]#([^/]#(/(([^/]##/)#[^/\"[:space:]]#)))* ]]; then
+            eval "match[1]=\"${match[1]//\"/\\\"}\""
+
+            if [[ -f $match[1] ]];then
+                log "$match[1]"; edit "$match[1]"
+            elif [[ -f /$match[3] ]];then
+                log "/$match[3]"; edit "/$match[3]"
+            elif [[ -f $match[3] ]];then
+                log "$match[3]"; edit "$match[3]"
+            fi
+            reply+=($_)
         elif [[ $f == (#b)*(([[:space:]]##)|(#s))([^:[:space:]]##)(#B)(:(#b)([^[:space:]]##)|)([[:space:]]##|(#e))* ]]; then
             if [[ -f $match[3] ]]; then
                 reply=( $match[3] )
@@ -67,6 +78,7 @@ else
                 edit "$reply[1]" $match[4];
             fi
         fi
+        (($#reply))&&break
     done
 fi
 
