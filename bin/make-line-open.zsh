@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 emulate zsh -o extended_glob
-typeset -g LOG_DIR=~/.config/tig
+typeset -g LOG_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/tig
 
 function log()
 {
