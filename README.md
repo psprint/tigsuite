@@ -150,3 +150,8 @@ Rename °feature° – menu (`tig`, `fzf`, etc.).
 
 ### Keys: eree
 Rename °feature° – prompt.
+
+## Installing
+
+Simply clone the repo and source `tigsuite.plugin.sh` (Bash) or `….zsh` (Zsh),
+or use any Zsh plugin manager.
