@@ -55,12 +55,14 @@ _tfind_find_index() {
 
 # Find the index to operate on, git dir, etc.
 _tfind_find_index || { _tfind_error_msg && return;}
-qa=(${qa_tag_data//$'\177'*/})
+qa=(${qa_tag_data//(#b)([^$'\177']##)$'\177'([^$'\1']##)*/${(r:17:: :)match[2]} $match[1]})
 
 IFS= 
 {
     print ${(r:COLUMNS::–:):-–}
     print Tags from ${${TAG[file]##$PDIR/}##$PWD/} index file. Enter to open editor on the tag.
+    print ${(r:COLUMNS::–:):-–}
+    print "   TAG NAME                          TAG CODE"
     print ${(r:COLUMNS::–:):-–}
 
     printf %s\\n $qa|\
