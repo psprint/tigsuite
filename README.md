@@ -5,6 +5,8 @@
 ### Keys exe
 Execute one of past ":!…" or ":exec …" commands after choosing one from a TUI like `tig` itself or `fzf`, etc.
 
+![past commands](https://raw.githubusercontent.com/psprint/tigsuite/main/img/past-commands.png)
+
 ### Keys: Zpa
 Apply selected stash with the `patch` utility. It might get better results
 than the standard `git stash apply …`
@@ -60,6 +62,8 @@ The same as `ZP`, but the patch is reversed.
 Browse all the tags from `TAGS` index file with a TUI helper app, and open
 `$EDITOR` on it.
 
+![tags](https://raw.githubusercontent.com/psprint/tigsuite/main/img/tags.png)
+
 ### Keys: x!mt
 Run `make tags` in the repo (should generate `TAGS` index file).
 
@@ -84,6 +88,14 @@ The same as `x!tz`, but with Vim-style `tags` index file.
 
 ### Keys: ed
 Runs the `$EDITOR` on current file and line. The same as original `e` key.
+
+## Support for °features°
+Features are named groups of files, which can be opened in editor, by picking
+up in tig:
+
+![features](https://raw.githubusercontent.com/psprint/tigsuite/main/img/features.png)
+
+or by any other tool like `fzf`. Set `$TICHOOSE_APP` to change from the default (`tig`).
 
 ### Keys: equ
 ### Keys: efe
