@@ -103,18 +103,49 @@ or by any other tool like `fzf`. Set `$TICHOOSE_APP` to change from the default 
 
 ### Keys: equ
 
+Edit the current accumulator/queue (in $EDITOR).
+
 ### Keys: efe
+Edit the file where all °features° are saved (in $EDITOR).
+
 ### Keys: esq
+View files in queue, in `tig`.
+
 ### Keys: esc
-### Keys: enc
+View files in commit, in `tig`.
+
 ### Keys: enq
+Create a new °feature° from accumulator/queue.
+
+### Keys: enc
+Create a new °feature° from commit.
+
 ### Keys: esvt
+Create a new °feature° from tree (HEAD).
+
 ### Keys: esvT
+Create a new °feature° from tree (current commit).
+
 ### Keys: eqe
+Empty the queue.
+
 ### Keys: esvf
+Save file in queue.
+
 ### Keys: esvF
+Save all files in given °feature° to the queue.
+
 ### Keys: esvc
+Save files in commit to the queue.
+
 ### Keys: eopm
+Open °feature° in `$EDITOR`, after picking (from `tig`, `fzf`, etc.).
+
 ### Keys: eope
+Open °feature° in `$EDITOR`, after entering its name in prompt.
+
 ### Keys: erem
+Rename °feature° – menu (`tig`, `fzf`, etc.).
+
 ### Keys: eree
+Rename °feature° – prompt.
