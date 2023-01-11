@@ -16,7 +16,7 @@ util/ti::get-editor||return 1
 EDITOR=$REPLY
 
 if [[ $FROM == features ]]; then
-    $EDITOR $TIREGI_FILE
+    $EDITOR $TINFO
 fi
 if [[ $FROM == queue ]]; then
     [[ -n $PID_ ]]&&QUEUE=$TICACHE/PID::$PID_.queue||{tigmsg -h {208}Error:%f\

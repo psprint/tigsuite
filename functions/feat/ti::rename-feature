@@ -6,7 +6,7 @@
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 local qmet=$1 qi=$3 qn=$4 q
-local -aU cont=(${(@f)"$(<$TIREGI_FILE)"}) qa
+local -aU cont=(${(@f)"$(<$TINFO)"}) qa
 integer qc
 
 # Initialize
@@ -16,7 +16,7 @@ util/ti::tigsuite-startup rename "" "<empty>"||return 1
 # Open fuzzy finder if no feature ID supplied
 if ((!$#qi||!$#qn))||[[ $qmet == tui ]];then
     util/ti::verify-chooser-app||return 1
-    cat $TIREGI_FILE|sed -r -e 's/ Q:"[^"]+"//g'|sort -n|\
+    cat $TINFO|sed -r -e 's/ Q:"[^"]+"//g'|sort -n|\
     {
         print ${(r:COLUMNS::—:):-—}
         print PICK A °FEATURE° TO RENAME…
@@ -59,8 +59,8 @@ if [[ -n $qi && -n $qn ]];then
         tigmsg -h %B{208}Warning:%f%b number of matches \>%B{208}1%f%b
         ret+=qc-1
     }
-    repeat 1 {printf %s\\n $filtered>!$TIREGI_FILE;ret+=$?;}
-    repeat 1 {printf %s\\n $qa>>!$TIREGI_FILE;ret+=$?;}
+    repeat 1 {printf %s\\n $filtered>!$TINFO;ret+=$?;}
+    repeat 1 {printf %s\\n $qa>>!$TINFO;ret+=$?;}
     tigmsg %B{27}Feature: {41}$qi{27} renamed to: {41}$qn
     ((ret))&&tigmsg -h %B{208}warning:%f%b non-zero exit code \
         \<%B{205}$ret%b%f\> from some of operations

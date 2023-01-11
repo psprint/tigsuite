@@ -10,12 +10,12 @@ local q op=$1 qc=$2 CID=$3
 local -a qa
 [[ -n $qc ]]&&qa=(${(@z)${(PA@)qc}})
 
-# dir, QREGI_FILE 
+# dir, QCONF 
 tigmsg %B{204}Initial status{135} of the operation ≈ {39}$op{135}:\\n\
 {135}· {41}PID{135} – the present PWD project-ID/tag:\
     «[227]{27}${(U)PID}{135}%k»\\n\
 %B{135}· Project dir: %U{39}$PDIR%u{135}\\n\
-· Registry file path: {69}$QREGI_FILE{135}\\n\
+· Registry file path: {69}$QCONF{135}\\n\
 · Accumulator/queue-file: {39}$TIPID_QUEUE:t{135} of project {41}$PID
 
 # ID

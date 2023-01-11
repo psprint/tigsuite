@@ -81,39 +81,40 @@ path+=( $TIG/{bin,libexec,functions}(N/) )
 # Modules
 zmodload zsh/parameter zsh/datetime
 
-export TIREGI_FILE TILOG TICACHE TICHOOSE_APP TINL
+export TICONFIG TINFO TILOG TICACHE TICHOOSE_APP TINL
 
  # Right customizable ~/.config/… and ~/.cache/… file paths
-: ${TIREGI_FILE:=${${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/${(L)TINICK}}:-$HOME/.config/${(L)TINICK}}/features.reg}
+: ${TICONFIG:=${XDG_CONFIG_HOME:-$HOME/.config}/${(L)TINICK}}
+: ${TINFO:=$TICONFIG/features.reg}
 : ${TICACHE:=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/${(L)TINICK}}:-$HOME/.cache/${(L)TINICK}}}
 : ${TILOG:=$TICACHE/${(L)TINICK}.log}
 : ${TINL:=$TILOG}
-export TIREGI_FILE=${~TIREGI_FILE} TILOG=${~TILOG} TICACHE=${~TICACHE} \
-        TINL=${~TINL}
-command mkdir -p $TIREGI_FILE:h $TILOG:h $TICACHE $TINL:h
-local QREGI_FILE=${TIREGI_FILE//(#s)$HOME/\~}
+export TINFO=${~TINFO} TILOG=${~TILOG} TICACHE=${~TICACHE} \
+        TICONFIG=${~TICONFIG} TINL=${~TINL}
+command mkdir -p $TINFO:h $TILOG:h $TICACHE $TICONFIG $TINL:h
+local QCONF=${TINFO//(#s)$HOME/\~}
 # useful global alias
 alias -g TIO="&>>!$TILOG"
 
 # No config dir found ?
-if [[ ! -d $TIREGI_FILE:h ]]; then
+if [[ ! -d $TINFO:h ]]; then
     tigmsg -h {204}Error:%f Couldn\'t setup config directory \
-                    at %B%F{39}$QREGI_FILE:h%b%f, exiting…
+                    at %B%F{39}$QCONF:h%b%f, exiting…
     return 1
 fi
 
 # No config ?
-if [[ ! -f $TIREGI_FILE ]]; then
-    command touch $TIREGI_FILE
-    [[ ! -f $TIREGI_FILE ]]&&{tigmsg -h %U{204}Error:%f couldn\'t create \
-                the registry-file %B{39}$QREGI_FILE%f%b, please addapt \
+if [[ ! -f $TINFO ]]; then
+    command touch $TINFO
+    [[ ! -f $TINFO ]]&&{tigmsg -h %U{204}Error:%f couldn\'t create \
+                the registry-file %B{39}$QCONF%f%b, please addapt \
                 file permissions or check if disk is full.
                 return 4}
 fi
 
 # Config empty?
-[[ ! -s $TIREGI_FILE ]]&&tigmsg -h %U{204}Warning:%f features registry-file \
-                    \({41}$QREGI_FILE%F\) currently empty, need to \
+[[ ! -s $TINFO ]]&&tigmsg -h %U{204}Warning:%f features registry-file \
+                    \({41}$QCONF%F\) currently empty, need to \
                     add some entries
 
 # Autoload functions

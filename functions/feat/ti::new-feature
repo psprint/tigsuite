@@ -23,7 +23,7 @@ util/ti::verify-cid $FROM $CID||return 1
 util/ti::verify-tigsuite-dir||return 1
 util/ti::tigsuite-startup new-feature/$FROM Q $FROM-$CID||return 1
 
-local -aU cont=(${(@f)"$(<$TIREGI_FILE)"})
+local -aU cont=(${(@f)"$(<$TINFO)"})
 local -aU prev=(${(M)cont:#(#s)$PID/$ID: *}) filtered=(${cont:#(#s)$PID/$ID: *})
 integer ret update
 
@@ -32,7 +32,7 @@ if ((!$#Q));then
         %B{39}$CID[1,7]%f%b doesn\'t change any files, or is incorrect, exiting…
     [[ $FROM == queue ]]&&tigmsg -h %U%B{208}Error:%f%b accumulator/queue-file \
         of project %B{39}$PID%f%b is empty. You can add some files by \
-        {41}Fsvf%f shortcut in %B{208}TIG interface%f%b.
+        {41}esvf%f shortcut in %B{208}TIG interface%f%b.
     return 1
 fi
 if ((!$#ID));then 
@@ -48,16 +48,16 @@ if (($#prev>=1));then
         tigmsg -h %B{204}Warning:%f%b the given new \
             °{27}feature-ID%f°=\"%B{39}${(U)ID}%f%b\" \
             already exists in the registry-file: \
-            %B{41}$QREGI_FILE%f%b… %B\\n\\nUpdate it? {204}[Yy/Nn]?
+            %B{41}$QCONF%f%b… %B\\n\\nUpdate it? {204}[Yy/Nn]?
         if read -q -E -e;then
             update=1
             tigmsg \\n%B{41}Waiting {39}3{41} seconds to stop the edition \
                 {204}(Ctrl-C){41}…
             sleep 3
-            command mv -f $TIREGI_FILE $TIREGI_FILE\~ TIO
+            command mv -f $TINFO $TINFO\~ TIO
             ret+=$?
             if [[ -n $filtered ]];then
-                builtin print -l -- $filtered>>!$TIREGI_FILE
+                builtin print -l -- $filtered>>!$TINFO
                 ret+=$?
             fi
         else
@@ -71,13 +71,13 @@ fi
 #
 
 repeat 1 { builtin print -r -- ${cont:+$'\n'}"$PID/$ID:" Q:"${(qqq)PDIR}" \
-            "${(qqq@)Q}">>!$TIREGI_FILE; } TIO
+            "${(qqq@)Q}">>!$TINFO; } TIO
 ret+=$?
 
 if ((ret==0));then
     tigmsg \\nFeature %B{41}$ID%f%b succesfully \
         ${${${update:#0}:+updated}:-created} and saved \
-        \(to: {39}$QREGI_FILE%f\). \\nIt contains files: \\n- \
+        \(to: {39}$QCONF%f\). \\nIt contains files: \\n- \
             \{39}${(j:%f,\n- {39}:)Q}%f.
     if [[ $FROM == queue ]];then
         builtin print -n -- >! $TIPID_QUEUE TIO

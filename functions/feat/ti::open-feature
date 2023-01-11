@@ -13,7 +13,7 @@ util/ti::verify-tigsuite-dir||return 1
 ((!$+Opts[--get-files-only]))&&{util/ti::tigsuite-startup open "" "<empty>"|| \
     return 1;}
 
-local -a cont=(${(@f)"$(<$TIREGI_FILE)"}) qa
+local -a cont=(${(@f)"$(<$TINFO)"}) qa
 local -a prev=(${(M)cont:#(#s)$PID/$ID: *}) filtered=(${cont:#(#s)$PID/$ID: *})
 integer ret update
 
@@ -35,7 +35,7 @@ if ((!$#ID));then
         print ${(r:COLUMNS::–:):-–}
         print "${(r:3:: :):-}"PID/FeatID"${(r:25:: :):-}"Files
         print ${(r:COLUMNS::–:):-–}
-        printf ·%s\\n ${(on)${(@f)"$(<$TIREGI_FILE)"}/ Q:\"[^\"]##\"}
+        printf ·%s\\n ${(on)${(@f)"$(<$TINFO)"}/ Q:\"[^\"]##\"}
     }|{q="${$($TICHOOSE_APP ${${(M)TICHOOSE_APP:#fzf}:+--tac})#·}";ret+=$?;}
 else
     qa=(${(@)${(M)cont:#[^/]##/$ID:*}/ Q:\"[^\"]##\"/})
