@@ -34,7 +34,7 @@ reply=()
 local qe ec
 
 for qe; do
-    repeat 1 {$f $qe&&{ec+=0;reply+=($REPLY)}||{ec+=$(($?%10));reply+=("");};}
+    repeat 1 {$f $qe&&{ec+=0;reply+=("$REPLY")}||{ec+=$(($?%10));reply+=("");};}
 done
 REPLY=$ec
 
