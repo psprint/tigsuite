@@ -44,6 +44,6 @@ REPLY=$ec
 # If run as script, then output via stdout
 if ((have_output&&is_script));then
     print -r -- $REPLY
-    printf %s\\n $reply
+    printf %s\\n "${reply[@]}"
 fi
 return 1-have_output
