@@ -109,7 +109,7 @@ bind generic esvt !zsh -c 'source $TIG_SUITE_GL&&feat/ti::copy-files tree'
 # 's'…a'v'…e from highlighted commit tree
 bind generic esvT !zsh -c 'source $TIG_SUITE_GL&&feat/ti::copy-files tree-of-commit "${${${${${:-%(commit)}//$~TIZERO_PAT/}:-%(blob)}//$~TIZERO_PAT/}:-}"'
 # 'q'…ueue'e'…mpty → prune queue/accumulator
-bind generic eqe !zsh -c 'source $TIG_SUITE_GL&&print -n>!$TIPID_QUEUE&&timsg_ %B{208}Notice: {33}Emptied accu/queue-file $MSG3||timsg_ %B{205}Error: {137}Could not empty accu/queue-file'
+bind generic eqe !zsh -c 'source $TIG_SUITE_GL&&print -n>!$TIPID_QUEUE&&tigmsg_ %B{208}Notice: {33}Emptied accu/queue-file $MSG3||tigmsg_ %B{205}Error: {137}Could not empty accu/queue-file'
 # 's'…a'v'…e current file
 bind generic esvf !zsh -c 'source $TIG_SUITE_GL&&feat/ti::save-file-to-PID-queue "%(file)"'
 # 's'…a'v'…e files from picked °feature° into queue/accumulator
