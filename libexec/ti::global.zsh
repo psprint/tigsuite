@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 #
-# Copyright (c) 2022 Sebastian Gniazdowski
+# Copyright (c) 2023 Sebastian Gniazdowski
 
 # A shared stub loaded as the first command in Tig/tigrc binding.
 # It sets up environment for all Tig defined commands/bindings
@@ -9,6 +9,7 @@
 # https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html
 
 0="${(%):-%x}"
+0="${${(M)0:#/*}:-$PWD/$0}"
 
 # Mark start of new output
 builtin print --
@@ -67,7 +68,7 @@ local TIG=$0:h:h
 
 Plugins[TIG_DIR]=$TIG
 local -a reply match mbegin mend
-local REPLY MATCH TMP; integer MBEGIN MEND
+local REPLY MATCH TMP qe; integer MBEGIN MEND
 local -aU path=($path) fpath=($fpath)
 local -U PATH FPATH
 
@@ -130,12 +131,12 @@ local -x TIPID_QUEUE=$TICACHE/PID::${(U)PID}.queue
 local -x TIZERO_PAT='(#s)0#(#e)'
 
 # Snippets with code
-for q in $TIG/libexec/ti::*.zsh~*/ti::global.zsh(N.); do
-    builtin source $q
+for qe in $TIG/libexec/ti::*.zsh~*/ti::global.zsh(N.); do
+    builtin source $qe
     integer ret=$?
     if ((ret));then
         tigmsg -h %U{204}Error:%f error %B{174}$ret%f%b when sourcing \
-            sub-file: {39}$q:t%f…
+            sub-file: {39}$qe:t%f…
         return 1
     fi
 done

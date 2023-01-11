@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
-# -*- mode: sh; sh-indentation: 4; indent-tabs-mode: nil; sh-basic-offset: 4; -*# Copyright (c) 2022 Sebastian Gniazdowski
+# -*- mode: sh; sh-indentation: 4; indent-tabs-mode: nil; sh-basic-offset: 4; -*# Copyright (c) 2023 Sebastian Gniazdowski
 0="${(%):-%x}"
+0="${${(M)0:#/*}:-$PWD/$0}"
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 local which=$1 met=$3 obj=$2
 local -aU qa

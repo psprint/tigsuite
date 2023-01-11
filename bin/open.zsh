@@ -1,4 +1,7 @@
 #!/usr/bin/env zsh
+# Copyright (c) 2023 Sebastian Gniazdowski
+0="${(%):-%x}"
+0="${${(M)0:#/*}:-$PWD/$0}"
 
 emulate zsh -o extended_glob
 typeset -g LOG_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/tig

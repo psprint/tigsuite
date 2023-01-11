@@ -1,8 +1,9 @@
 #!/usr/bin/env zsh
 #
-# Copyright (c) 2022 Sebastian Gniazdowski
+# Copyright (c) 2023 Sebastian Gniazdowski
 #
 0="${(%):-%x}"
+0="${${(M)0:#/*}:-$PWD/$0}"
 : ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
 
 local qmet=$1 qi=$3 qn=$4 q

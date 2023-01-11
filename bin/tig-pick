@@ -12,6 +12,7 @@
 # All parameters passed to the script will be forwarded to 'tig'.
 #
 0="${(%):-%x}"
+0="${${(M)0:#/*}:-$PWD/$0}"
 
 set -e
 

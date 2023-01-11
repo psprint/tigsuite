@@ -1,7 +1,8 @@
 # -*- mode: sh; sh-indentation: 4; indent-tabs-mode: nil; sh-basic-offset: 4; -*-
 
-# Copyright (c) 2022 Sebastian Gniazdowski
+# Copyright (c) 2023 Sebastian Gniazdowski
 0="${(%):-%x}"
+0="${${(M)0:#/*}:-$PWD/$0}"
 
 # Then ${0:h} to get plugin's directory
 if [[ ${zsh_loaded_plugins[-1]} != */tigsuite && -z ${fpath[(r)${0:h}]} ]] {
