@@ -11,6 +11,21 @@ bind pager o !zsh -c '$TIG_SUITE_DIR/bin/open.zsh $0' %(text)
 bind pager E !zsh -c '$TIG_SUITE_DIR/bin/open.zsh $0' %(text)
 
 ###
+### Patch support
+###
+
+# Create a patch file with git format-patch
+bind generic xfp !zsh -c 'source $TIG_SUITE_GL||exit 1;qe=$PDIR/patches;mkdir -p $qe;q="%(prompt Patch file name without .patch extension: ).patch";noglob command git format-patch --ignore-space-at-eol -N -k --progress --stdout %(commit)~..%(commit)>!$qe/$q&&[[ -f $qe/$q ]]&&tigmsg_ -h %B{33}PATCH CREATED at: {41}%U${qe/$PDIR\\/}/$q||tigmsg_ %B{208}PROBLEM CREATING THE PATCH!'
+
+# Apply a patch with (p)git or (P)patch command
+bind generic xap !zsh -c 'source $TIG_SUITE_GL||exit 1;tigmsg_ -h  %B{205}––– Dry-run with {41}git apply{205}: ———%f%b;git apply --stat --summary --ignore-space-change --whitespace=fix --recount "%(file)";tigmsg_ -h  %B{205}––– Now applying patch with {41}git apply{205}: ———%f%b;noglob command git apply -3 --ignore-space-change --recount "%(file)"&&tigmsg_ -h %B{33}Patch applied cleanly||tigmsg_ -h %B{205}Errors when applying patch'
+bind generic xaP !zsh -c 'source $TIG_SUITE_GL||exit 1;tigmsg_ -h  %B{205}––– Dry-run with {41}git apply{205}: ———%f%b;git apply --stat --summary --ignore-space-change --whitespace=fix --recount "%(file)";tigmsg_ -h %B{205}––– Now applying with {41}patch{205} command: –––%f%b; noglob command patch -p1 -F7000 --ignore-whitespace -i "%(file)"&&tigmsg_ -h %B{33}Patch applied cleanly||tigmsg_ -h %B{205}Errors when applying patch'
+
+# The same, but reversed
+bind generic xRap !zsh -c 'source $TIG_SUITE_GL||exit 1;tigmsg_ -h  %B{205}––– Dry-run with {41}git apply{205}: ———%f%b;git apply --stat --summary --ignore-space-change --whitespace=fix --recount "%(file)";tigmsg_ -h  %B{205}––– Now applying patch with {41}git apply{205}: ———%f%b;noglob command git apply -R -3 --ignore-space-change --recount "%(file)"&&tigmsg_ -h %B{33}Patch applied cleanly||tigmsg_ -h %B{205}Errors when applying patch'
+bind generic xRaP !zsh -c 'source $TIG_SUITE_GL||exit 1;tigmsg_ -h  %B{205}––– Dry-run with {41}git apply{205}: ———%f%b;git apply --stat --summary --ignore-space-change --whitespace=fix --recount "%(file)";tigmsg_ -h %B{205}––– Now applying {33}REVERSED{205} with {41}patch{205} command: –––%f%b; noglob command patch -R -p1 -F7000 --ignore-whitespace -i "%(file)"&&tigmsg_ -h %B{33}Patch applied cleanly||tigmsg_ -h %B{205}Errors when applying patch'
+
+###
 ### Stash support
 ###
 
