@@ -1,5 +1,11 @@
 # Tig Suite
 
+A plugin providing over 40 `bindkey` commands like e.g. `x!b` – Ctags browser
+directly within `tig`.
+
+Simply source `tig.plugin.(sh|zsh)` (`….sh` for Bash) and you can use them
+instantly.
+
 ## Various commands
 
 ### Keys: exe
