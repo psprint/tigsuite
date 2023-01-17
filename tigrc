@@ -99,8 +99,8 @@ bind generic exe >!zsh  -c 'rm -f $TIG_SCRIPT;source $TIG_SUITE_GL&&feat/ti::run
 ###
 
 # Edit of `qu…eue` and of `fe…ature` files
-bind generic equ !zsh  -c 'source $TIG_SUITE_GL&&feat/ti::edit-external queue'
-bind generic efe !zsh  -c 'source $TIG_SUITE_GL&&feat/ti::edit-external features'
+bind generic equ !zsh  -c 'source $TIG_SUITE_GL&&feat/ti::edit-external queue $PID'
+bind generic efe !zsh  -c 'source $TIG_SUITE_GL&&feat/ti::edit-external features $PID'
 # View of files in queue
 bind generic esq !zsh  -c 'source $TIG_SUITE_GL&&feat/ti::show-files-general queue'
 # View of files in commit

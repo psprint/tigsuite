@@ -20,7 +20,7 @@ if [[ $FROM == features ]]; then
     $EDITOR $TINFO
 fi
 if [[ $FROM == queue ]]; then
-    [[ -n $PID_ ]]&&QUEUE=$TICACHE/PID::$PID_.queue||{tigmsg -h {208}Error:%f\
+    [[ -n $PID_ ]]&&QUEUE=$TICACHE/PID::${(U)PID_}.queue||{tigmsg -h {208}Error:%f\
                     PWD is not a project, first {33}cd%f to one, exiting…
                     return 3
                 }
