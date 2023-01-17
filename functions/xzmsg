@@ -10,7 +10,7 @@ local -A Opts
 builtin zparseopts -D -E -A Opts -- p e q h || return 7
 local funloc=$1
 [[ $funloc == ?*:<-> ]]&&shift||funloc=
-[[ -n $funloc ]]&&funloc="F{27}%B[%b$funloc%B]%b:%f"
+[[ -n $funloc ]]&&funloc="%F{27}%B[%b$funloc%B]%b:%f"
 
 # Allow but strip non-number format codes, for future expansions
 (($+Opts[-e]))&&local e=-u2
