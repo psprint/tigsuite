@@ -1,5 +1,6 @@
 color "/^[-–—]+$/" magenta default normal
 color "/^[^·–—0-9]+/" blue default bold
 color "/^[0-9]+\./" color135 default bold
+set pager-autoscroll = no
 set pager-view = line-number:no text
 

@@ -7,52 +7,73 @@
 # Set options
 builtin emulate -L zsh -o extendedglob -o noshortloops -o warncreateglobal \
                         -o typesetsilent
+
 # $0 support
 0="${${(M)${0::=${(%):-%x}}:#/*}:-$PWD/$0}"
+
+# Load initialization script
 source "$0:h:h/libexec/ti::global.zsh"
 
 # -v verbose
 # -G no cd, absolute paths
 local -A Opts
-builtin zparseopts -D -E -A Opts -- v G || return 7
+builtin zparseopts -D -E -A Opts -- v G 1 2 3 4 5 || return 7
 
+# Get the query from filtered args
 local QR=$1
 
-reply=(${(f@)"$(<$TINFO)"})
+# Read feature registry
+{reply=(${(f@)"$(<$TINFO)"});} TIO
 if ((!$#reply));then
     tigmsg -h %B{208}Error:{135} no features defined
     return 1
 fi
 
+# Any query given?
 if [[ -z $QR ]];then
     tigmsg -h %B{208}Error:{135} argument required – the feature to open
     return 0
 fi
 
-local QRP="((#s)|[^/]##)[^:]#${QR}[^:]#"
+# Prepare patterns
+local QRP="((#s)|[^/]##)[^:]#${QR}[^:]#" FEATP='[^/]##/[^:]##'
+
+# Search for requested °feature°
 reply=(${(M)reply:#(#b)$~QRP: Q:\"([^\"]##)\" *})
 if ((!$#reply));then
     tigmsg -h %B{208}Error:{135} No such feature: {205}\"{41}*{39}$QR{41}*{205}\"
     return 1
 fi
 
-local PDIR=$match[2] FEAT_PAT='[^/]##/[^:]##'
-local FEATID=${(M)reply[1]##$~FEAT_PAT} \
+local PDIR=$match[2]
 
+# Check PDIR if it contains any data
 if [[ $PDIR == EMPTYSTR ]];then
     tigmsg -h %B{208}Error:%b{135} feature file %B{41}TINFO%b{135} broken, \
         couldn\'t get project dir of feature: %B{33}$FEATID
     return 1
 fi
 
-if (($#reply>1));then
+# Support -# indice options
+if (($#reply>1&&!Opts[(i)-<->]));then
     tigmsg -h %B{208}Error:{135} multiple matches \
-        {41}({69}${(j:{41}, {69}:)${(M)reply##$~FEAT_PAT}}{41}){135}, \
+        {41}({69}${(j:{41}, {69}:)${(M)reply##$~FEATP}}{41}){135}, \
         please narrow the query
     return 1
+elif (($#reply>1)); then
+    integer qi=-1*Opts[(i)-<->]
+    if ((qi<=$#reply&&qi));then
+        reply=($reply[qi])
+    else
+        tigmsg -h %B{208}Error:{135} given index ({41}${Opts[(i)-<->]#-}{135}) \
+            greater than {39}$#reply
+        return 1
+    fi
 fi
 
-local -a files=(${(Q)${(z)reply[1]##$~FEAT_PAT: Q:\"[^\"]##\" }})
+local FEATID=${(M)reply[1]##$~FEATP} \
+
+local -a files=(${(Q)${(z)reply[1]##$~FEATP: Q:\"[^\"]##\" }})
 util/ti::get-editor||return 1
 
 (($+Opts[-G]))&&local MSG="via absolute paths (no %B{135}cd%b{74})"||\

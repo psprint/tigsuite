@@ -27,12 +27,12 @@ typeset -gA Plugins
 # and uses a verbatim `print` builtin otherwise.
 \tigmsg_()
 {
-    if [[ -x $TIG_SUITE_DIR/functions/xzmsg ]]; then
-        $TIG_SUITE_DIR/functions/xzmsg "$@"
-    elif (($+commands[xzmsg])); then
-        command xzmsg "$@"
-    elif (($+functions[xzmsg])); then
-        xzmsg "$@"
+    if [[ -x $TIG_SUITE_DIR/functions/zmsg ]]; then
+        $TIG_SUITE_DIR/functions/zmsg "$@"
+    elif (($+commands[zmsg])); then
+        command zmsg "$@"
+    elif (($+functions[zmsg])); then
+        zmsg "$@"
     else
         builtin print -- ${@${@//(%f|%B|%F|%f)/}//\{[^\}]##\}/}
     fi
@@ -120,7 +120,7 @@ fi
                     add some entries
 
 # Autoload functions
-autoload -z regexp-replace $TIG/functions/(xzmsg|ti::)*~*'~'(#qN.non:t) \
+autoload -z regexp-replace $TIG/functions/(zmsg|ti::)*~*'~'(#qN.non:t) \
                 $TIG/functions/*/(ti::)*~*'~'(#qN.non:t2)
 
 # Set up aliases (global, suffix and the proper ones)

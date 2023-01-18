@@ -26,9 +26,9 @@ $HOME/.cache/tigsuite}}
         TIG_SUITE_GL=$Plugins[TIG_DIR]/libexec/ti::global.zsh \
         TIAES=$Plugins[TIG_DIR]/aliases \
         TICACHE TILOG
-    autoload -z $TIG_SUITE_DIR/functions/(ti::|xz*)*~*~(#qN.non:t) \
-            $TIG_SUITE_DIR/functions/*/(ti::|xz*)*~*~(#qN.non:t2)
-    (($+functions[xzmsg]))||print -r -- "Warning: ·TigSuite· plugin occurred" \
+    autoload -z $TIG_SUITE_DIR/functions/(ti::|z*)*~*~(#qN.non:t) \
+            $TIG_SUITE_DIR/functions/*/(ti::|z*)*~*~(#qN.non:t2)
+    (($?||!$+functions[zmsg]))&&print "Warning: ·TigSuite·-plugin occurred" \
                                 "problems when loading functions"
 
     # Use config
