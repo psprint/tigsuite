@@ -42,7 +42,7 @@ $HOME/.cache/tigsuite}}
     fi
 
     # Set up aliases (global, suffix and the proper ones)
-    [[ -f $TIAES/*[a-zA-Z0-9_-](#qNY1.) ]]&&for REPLY in $TIAES/*[a-zA-Z0-9_-];do
+    [[ -f $TIAES/*[^~](#qNY1.) ]]&&for REPLY in $TIAES/*[^~];do
         REPLY="$REPLY:t=$(<$REPLY)"
         alias "${${REPLY#*=}%%:*}" "${(M)REPLY##[^=]##}=${REPLY#*:}"
     done

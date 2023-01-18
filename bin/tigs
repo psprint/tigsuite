@@ -47,13 +47,6 @@ fi
 
 local PDIR=$match[2]
 
-# Check PDIR if it contains any data
-if [[ $PDIR == EMPTYSTR ]];then
-    tigmsg -h %B{208}Error:%b{135} feature file %B{41}TINFO%b{135} broken, \
-        couldn\'t get project dir of feature: %B{33}$FEATID
-    return 1
-fi
-
 # Support -# indice options
 if (($#reply>1&&!Opts[(i)-<->]));then
     tigmsg -h %B{208}Error:{135} multiple matches \
@@ -75,6 +68,10 @@ local FEATID=${(M)reply[1]##$~FEATP} \
 
 local -a files=(${(Q)${(z)reply[1]##$~FEATP: Q:\"[^\"]##\" }})
 util/ti::get-editor||return 1
+local qe=$REPLY
+
+# Check if vars contain any data
+util/ti::chkstr "$QR" "$PDIR" "$FEATID" "$files" "$qe"||return 1
 
 (($+Opts[-G]))&&local MSG="via absolute paths (no %B{135}cd%b{74})"||\
                 MSG="via first %B{135}cd%b{74} to project dir"
@@ -89,5 +86,5 @@ tigmsg {74}Opening feature: %B{41}$FEATID{74}%b with ::%B{39}$REPLY{74}%b:: \
                 ({41}$PDIR{137}) doesn\'t exist
         return 1
     fi
-    $REPLY -- $files
+    "${qe:-cat}" -- $files
 )

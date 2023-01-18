@@ -3,6 +3,9 @@
 0="${${(M)0:#/*}:-$PWD/$0}"
 builtin emulate -L zsh -o extendedglob
 
+# Mark that zmsg has been called
+REPLY=1
+
 # Quiet
 [[ $1 == 1 ]]&&return
 
