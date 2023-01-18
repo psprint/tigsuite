@@ -24,6 +24,7 @@ $HOME/.cache/tigsuite}}
     : ${TICHOOSE_APP:=tig-pick}
     export TIG_SUITE_DIR=$Plugins[TIG_DIR] \
         TIG_SUITE_GL=$Plugins[TIG_DIR]/libexec/ti::global.zsh \
+        TIAES=$Plugins[TIG_DIR]/aliases \
         TICACHE TILOG
     autoload -z $TIG_SUITE_DIR/functions/(ti::|xz*)*~*~(#qN.non:t) \
             $TIG_SUITE_DIR/functions/*/(ti::|xz*)*~*~(#qN.non:t2)
@@ -39,6 +40,12 @@ $HOME/.cache/tigsuite}}
     elif [[ -f ~/.tigrc ]];then
         qc=$HOME/.tigrc
     fi
+
+    # Set up aliases (global, suffix and the proper ones)
+    [[ -f $TIAES/*[a-zA-Z0-9_-](#qNY1.) ]]&&for REPLY in $TIAES/*[a-zA-Z0-9_-];do
+        REPLY="$REPLY:t=$(<$REPLY)"
+        alias "${${REPLY#*=}%%:*}" "${(M)REPLY##[^=]##}=${REPLY#*:}"
+    done
 
     # Save original config
     [[ -f $qc ]]&&TIORIG_RC=$qc||print "Warning: ·TigSuite· found no user" \

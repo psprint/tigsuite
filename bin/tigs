@@ -16,7 +16,7 @@ source "$0:h:h/libexec/ti::global.zsh"
 local -A Opts
 builtin zparseopts -D -E -A Opts -- v G || return 7
 
-local QUERY=$1
+local QR=$1
 
 reply=(${(f@)"$(<$TINFO)"})
 if ((!$#reply));then
@@ -24,22 +24,22 @@ if ((!$#reply));then
     return 1
 fi
 
-if [[ -z $QUERY ]];then
+if [[ -z $QR ]];then
     tigmsg -h %B{208}Error:{135} argument required – the feature to open
     return 0
 fi
 
-reply=(${(M)reply:#(#b)(#s)[^/]##/[^:]#${QUERY}[^:]#: Q:\"([^\"]##)\" *})
+local QRP="((#s)|[^/]##)[^:]#${QR}[^:]#"
+reply=(${(M)reply:#(#b)$~QRP: Q:\"([^\"]##)\" *})
 if ((!$#reply));then
-    tigmsg -h %B{208}Error:{135} No such feature:\
-        {205}\"{41}*{39}$QUERY{41}*{205}\"
+    tigmsg -h %B{208}Error:{135} No such feature: {205}\"{41}*{39}$QR{41}*{205}\"
     return 1
 fi
 
-local PDIR=$match[1] FEAT_PAT='[^/]##/[^:]##'
+local PDIR=$match[2] FEAT_PAT='[^/]##/[^:]##'
 local FEATID=${(M)reply[1]##$~FEAT_PAT} \
 
-if [[ $PDIR == [[:space:]]# ]];then
+if [[ $PDIR == EMPTYSTR ]];then
     tigmsg -h %B{208}Error:%b{135} feature file %B{41}TINFO%b{135} broken, \
         couldn\'t get project dir of feature: %B{33}$FEATID
     return 1

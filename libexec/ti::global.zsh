@@ -16,7 +16,7 @@ builtin print --
 
 # Set the base and typically useful options
 builtin emulate -L zsh
-builtin setopt extendedglob warncreateglobal typesetsilent noshortloops \
+builtin setopt extendedglob kshglob warncreateglobal typesetsilent noshortloops \
     noautopushd promptsubst
 
 local -x TINICK=TigSuite TINICK_=TigSu
@@ -90,6 +90,7 @@ export TICONFIG TINFO TILOG TICACHE TICHOOSE_APP TINL
 : ${TICACHE:=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/${(L)TINICK}}:-$HOME/.cache/${(L)TINICK}}}
 : ${TILOG:=$TICACHE/${(L)TINICK}.log}
 : ${TINL:=$TILOG}
+: ${TIAES:=$TIG/aliases}
 export TINFO=${~TINFO} TILOG=${~TILOG} TICACHE=${~TICACHE} \
         TICONFIG=${~TICONFIG} TINL=${~TINL}
 command mkdir -p $TINFO:h $TILOG:h $TICACHE $TICONFIG $TINL:h
@@ -121,6 +122,12 @@ fi
 # Autoload functions
 autoload -z regexp-replace $TIG/functions/(xzmsg|ti::)*~*'~'(#qN.non:t) \
                 $TIG/functions/*/(ti::)*~*'~'(#qN.non:t2)
+
+# Set up aliases (global, suffix and the proper ones)
+[[ -f $TIAES/*[a-zA-Z0-9_-](#qNY1.) ]]&&for REPLY in $TIAES/*[a-zA-Z0-9_-];do
+    REPLY="$REPLY:t=$(<$REPLY)"
+    alias "${${REPLY#*=}%%:*}" "${(M)REPLY##[^=]##}=${REPLY#*:}"
+done
 
 # Export a few local var
 util/ti::verify-tigsuite-dir||return 1
