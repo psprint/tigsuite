@@ -79,7 +79,7 @@ util/ti::chkstr "$QR" "$PDIR" "$FEATID" "$files" "$qe"||return 1
 tigmsg {74}Opening feature: %B{41}$FEATID{74}%b with ::%B{39}$REPLY{74}%b:: \
     $MSG…
 
-(($+Opts[-G]))&&files=($PDIR/$^files)
+(($+Opts[-G]))&&files=(${files/(#m)(#s)[^\/]/$PDIR/$MATCH})
 (
     if ((!$+Opts[-G]))&&! cd -q "$PDIR";then
         tigmsg -h %B{205}Error:{137} feature project dir \

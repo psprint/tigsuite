@@ -23,12 +23,15 @@ Plugins[TIG_DIR]="$0:h"
     : ${TICACHE:=${XDG_CACHE_HOME:-$HOME/.cache}/${(L)TINICK}}
     : ${TILOG:=$TICACHE/tio.log}
     : ${TICHOOSE_APP:=tig-pick}
+
     export TICONFIG TINFO TIG_SUITE_DIR=$Plugins[TIG_DIR] \
         TIG_SUITE_GL=$Plugins[TIG_DIR]/libexec/ti::global.zsh \
         TIAES=$Plugins[TIG_DIR]/aliases \
         TICACHE TILOG
+
     autoload -z $TIG_SUITE_DIR/functions/(ti::|z*)*~*~(#qN.non:t) \
             $TIG_SUITE_DIR/functions/*/(ti::|z*)*~*~(#qN.non:t2)
+
     (($?||!$+functions[zmsg]))&&print "Warning: ·TigSuite·-plugin occurred" \
                                 "problems when loading functions"
 
