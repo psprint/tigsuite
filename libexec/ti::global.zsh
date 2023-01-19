@@ -92,8 +92,8 @@ export TICONFIG TINFO TILOG TICACHE TICHOOSE_APP TINL
 : ${TINL:=$TILOG}
 : ${TIAES:=$TIG/aliases}
 export TINFO=${~TINFO} TILOG=${~TILOG} TICACHE=${~TICACHE} \
-        TICONFIG=${~TICONFIG} TINL=${~TINL}
-command mkdir -p $TINFO:h $TILOG:h $TICACHE $TICONFIG $TINL:h
+        TICONFIG=${~TICONFIG} TINL=${~TINL} TIAES=${~TIAES}
+command mkdir -p $TINFO:h $TILOG:h $TICACHE $TICONFIG $TINL:h $TIAES:h
 local QCONF=${TINFO//(#s)$HOME/\~}
 # useful global alias
 alias -g TIO="&>>!$TILOG"

@@ -17,12 +17,13 @@ typeset -gA Plugins
 Plugins[TIG_DIR]="$0:h"
 () {
     emulate -L zsh -o extendedglob
-    # Standard hash for plugins, to not pollute the namespace
-    : ${TICACHE:=${${XDG_CACHE_HOME:+$XDG_CACHE_HOME/tigsuite}:-\
-$HOME/.cache/tigsuite}}
+    : ${TINICK:=TigSuite}
+    : ${TICONFIG:=${XDG_CONFIG_HOME:-$HOME/.config}/${(L)TINICK}}
+    : ${TINFO:=$TICONFIG/features.reg}
+    : ${TICACHE:=${XDG_CACHE_HOME:-$HOME/.cache}/${(L)TINICK}}
     : ${TILOG:=$TICACHE/tio.log}
     : ${TICHOOSE_APP:=tig-pick}
-    export TIG_SUITE_DIR=$Plugins[TIG_DIR] \
+    export TICONFIG TINFO TIG_SUITE_DIR=$Plugins[TIG_DIR] \
         TIG_SUITE_GL=$Plugins[TIG_DIR]/libexec/ti::global.zsh \
         TIAES=$Plugins[TIG_DIR]/aliases \
         TICACHE TILOG

@@ -43,6 +43,9 @@ Provide it by setting ZERO to it.\\n"
     fi
 
     # Standard hash for plugins, to not pollute the namespace
+    : ${TICONFIG:=${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/tigsuite}}
+    : ${TICONFIG:=$HOME/.config/tigsuite}
+    : ${TINFO:=$TICONFIG/features.reg}
     : ${TICACHE:=${XDG_CACHE_HOME:+$XDG_CACHE_HOME/tigsuite}}
     : ${TICACHE:=$HOME/.cache/tigsuite}
     : ${TILOG:=$TICACHE/tig.log}
