@@ -8,8 +8,8 @@
 # Handle $0 according to the Zsh Plugin Standard:
 # https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html
 
-0="${(%):-%x}"
-0="${${(M)0:#/*}:-$PWD/$0}"
+# Possibly fix $0 with a new trick – use of a %x prompt expansion
+0="${${(M)${0::=${(%):-%x}}:#/*}:-$PWD/$0}"
 
 # Mark start of new output
 builtin print --
