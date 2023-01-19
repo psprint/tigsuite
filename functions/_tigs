@@ -1,0 +1,22 @@
+#compdef tigs
+
+setopt localoptions extendedglob warncreateglobal typesetsilent
+
+local curcontext="$curcontext" state state_descr line ret=1
+local -a expl
+
+_arguments -C \
+    '1: :->command'\
+    '*: :->argument' && ret=0
+
+case $state in
+    command)
+        local -a q=(${(M)${(f)"$(<$TINFO)"}##[^/]##/[^:]##})
+        _describe -t features "available °features°" q && ret=0
+        ;;
+
+    argument)
+        ;;
+esac
+
+return $ret
