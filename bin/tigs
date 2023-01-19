@@ -16,8 +16,10 @@ source "$0:h:h/libexec/ti::global.zsh"
 
 # -v verbose
 # -G no cd, absolute paths
+# -s select visually
+# -# offset of the picked °feature° when multiple match
 local -A Opts
-builtin zparseopts -D -E -A Opts -- v G 1 2 3 4 5 || return 7
+builtin zparseopts -D -E -A Opts -- v G 1 2 3 4 5 s || return 7
 
 # Get the query from filtered args
 local QR=$1
@@ -30,13 +32,22 @@ if ((!$#reply));then
 fi
 
 # Any query given?
-if [[ -z $QR ]];then
+if ((!$#QR&&!$+Opts[-s]));then
     tigmsg -h %B{208}Error:{135} argument required – the feature to open
     return 0
 fi
 
 # Prepare patterns
 local QRP="((#s)|[^/]##)[^:]#${QR}[^:]#" FEATP='[^/]##/[^:]##'
+
+# TUI-pick the °feature°?
+if (($+Opts[-s]));then
+    integer ret
+    (($+functions[feat/ti::open-feature]))&&feat/ti::open-feature;ret+=!$?
+    (($+functions[ti::open-feature]))&&ti::open-feature;ret+=!$?
+    (($+commands[ti::open-feature]))&&command ti::open-feature;ret+=!$?
+    return !ret
+fi
 
 # Search for requested °feature°
 reply=(${(M)reply:#(#b)$~QRP: Q:\"([^\"]##)\" *})
