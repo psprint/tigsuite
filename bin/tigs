@@ -19,7 +19,7 @@ source "$0:h:h/libexec/ti::global.zsh"
 # -s select visually
 # -# offset of the picked °feature° when multiple match
 local -A Opts
-builtin zparseopts -D -E -A Opts -- v G 1 2 3 4 5 s || return 7
+builtin zparseopts -D -E -A Opts -- v G l 1 2 3 4 5 s || return 7
 
 # Get the query from filtered args
 local QR=$1
@@ -78,6 +78,13 @@ fi
 local FEATID=${(M)reply[1]##$~FEATP} \
 
 local -a files=(${(Q)${(z)reply[1]##$~FEATP: Q:\"[^\"]##\" }})
+
+# List files in a feature?
+if (($+Opts[-l]));then
+    printf ·%s\\n $files
+    return !$#files
+fi
+
 util/ti::get-editor||return 1
 local qe=$REPLY
 
