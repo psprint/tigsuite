@@ -12,7 +12,7 @@ if [[ ${zsh_loaded_plugins[-1]} != */tigsuite && -z ${fpath[(r)${0:h}]} ]] {
 }
 
 # Add bin/ to path if requested
-[[ -v tig_set_path ]]&&{typeset -gU path; path+=("${0:h}"/bin);}
+(($+tig_set_path))&&{typeset -gU path; path+=("${0:h}"/bin);}
 
 # (){…} is to use extglob locally
 typeset -gA Plugins

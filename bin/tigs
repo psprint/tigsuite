@@ -12,7 +12,7 @@ builtin emulate -L zsh -o extendedglob -o noshortloops -o warncreateglobal \
 0="${${(M)${0::=${(%):-%x}}:#/*}:-$PWD/$0}"
 
 # Load initialization script
-source "$0:h:h/libexec/ti::global.zsh"
+source "$0:h:h"/libexec/ti::global.zsh
 
 # -v verbose
 # -G no cd, absolute paths
@@ -98,6 +98,7 @@ tigmsg {74}Opening feature: %B{41}$FEATID{74}%b with ::%B{39}$qe{74}%b:: \
     $MSG…
 
 (($+Opts[-G]))&&files=(${files/(#m)(#s)[^\/]/$PDIR/$MATCH})
+
 (
     if ((!$+Opts[-G]))&&! cd -q "$PDIR";then
         tigmsg -h %B{205}Error:{137} feature project dir \

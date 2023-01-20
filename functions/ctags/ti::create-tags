@@ -15,7 +15,8 @@ fi
 
 # Zsh?
 if [[ $tpe == (#i)zsh ]];then
-    repeat 1 {ctags -R $opt -G --maxdepth=3 --options=$TIG_SUITE_DIR/share/zsh.ctags --languages=zsh3,zsh,sh;ec+=1+$?;}
+    repeat 1 {ctags -R $opt -G --maxdepth=3 \
+        --options=$TIG_SUITE_DIR/share/zsh.ctags --languages=zsh3,zsh,sh;ec+=1+$?;}
 fi
 
 # Unknown language requested?
