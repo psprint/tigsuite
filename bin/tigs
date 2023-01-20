@@ -18,6 +18,7 @@ source "$0:h:h/libexec/ti::global.zsh"
 # -G no cd, absolute paths
 # -s select visually
 # -# offset of the picked °feature° when multiple match
+# -l show files in the °feature°
 local -A Opts
 builtin zparseopts -D -E -A Opts -- v G l 1 2 3 4 5 s || return 7
 
@@ -75,8 +76,7 @@ elif (($#reply>1)); then
     fi
 fi
 
-local FEATID=${(M)reply[1]##$~FEATP} \
-
+local FEATID=${(M)reply[1]##$~FEATP} 
 local -a files=(${(Q)${(z)reply[1]##$~FEATP: Q:\"[^\"]##\" }})
 
 # List files in a feature?
@@ -94,7 +94,7 @@ util/ti::chkstr "$QR" "$PDIR" "$FEATID" "$files" "$qe"||return 1
 (($+Opts[-G]))&&local MSG="via absolute paths (no %B{135}cd%b{74})"||\
                 MSG="via first %B{135}cd%b{74} to project dir"
 
-tigmsg {74}Opening feature: %B{41}$FEATID{74}%b with ::%B{39}$REPLY{74}%b:: \
+tigmsg {74}Opening feature: %B{41}$FEATID{74}%b with ::%B{39}$qe{74}%b:: \
     $MSG…
 
 (($+Opts[-G]))&&files=(${files/(#m)(#s)[^\/]/$PDIR/$MATCH})
