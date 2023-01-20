@@ -1,0 +1,58 @@
+#!/usr/bin/env zsh
+0="${(%):-%x}"
+0="${${(M)0:#/*}:-$PWD/$0}"
+: ${TIG_SUITE_DIR:=$0:h:h} ${Plugins[TIG_DIR]:=$0:h:h}
+
+local qr=$1 cid=$2 zid=$3 fe=$4 OUTPUT cmd
+integer ec
+local -a opt
+
+error-msg(){local -h ret=$1 LINENO=$3 0=$2
+    tigmsg -h %B{208}Exit code from {41}$4{208} command: {208}·{207}$ec{208}·
+}
+
+# Preamble new line
+[[ $qr == ext((oth|)|(rev|)|git) ]]&&print
+
+# Use patch?
+if [[ $qr == ext(oth|)(rev|)(1|) ]];then
+    tigmsg -h %B{33}Applying {208}${${qr:#ext}:+REVERSED }{41}$cid[1,7]{33} commit (stash: {41}${(q)zid}{33})…
+    util/ti::verify-cid commit $cid||return 1
+    [[ $qr == *rev* ]]&&opt=(-R)
+    [[ $qr == *oth* ]]&&cmd="git diff $zid\\^1 $zid ${${(M)qr:#*1}:+-- $fe}"||\
+        cmd="git show -m -p $cid"
+ 
+    print $cmd
+    if ! {OUTPUT="$(eval "command $cmd")";};then
+        tigmsg -h %B{207}––{208} Error:{137} Couldn\'t \
+                    read commit: {41}${cid[1,7]}{137}, no action{207} ––
+        return 7
+    fi
+    print -r -- $OUTPUT | command tee -a $TILOG | \
+                if patch -p1 $opt; then
+                    tigmsg -h %B{33}Stash correctly applied using \
+                        {41}patch{33} command
+                else
+                    ec=$?
+                    error-msg $ec $0:t $LINENO patch
+                    tigmsg -h %B{207}––{208} Unsuccessful apply using \
+                        {41}patch{208} command, some files might be \
+                        unchanged {207}––
+                fi
+fi
+
+# Use git?
+if [[ $qr == git ]];then
+    if command git stash apply ${zid:#0##};then
+        tigmsg -h %B{33}Stash correctly applied using \
+            {41}git stash apply{33} command
+    else
+        ec=$?
+        error-msg $ec $0:t $LINENO git
+        tigmsg -h %B{207}––{208} Unsuccessful apply using \
+            {41}git stash apply{208} command, some files might be \
+            unchanged {207}––
+    fi
+fi
+
+return ec
