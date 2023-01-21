@@ -23,12 +23,13 @@ local -A Opts
 builtin zparseopts -D -E -A Opts -- v G g h -help l 1 2 3 4 5 s || return 7
 
 if (($+Opts[-h]||$+Opts[--help]));then
-    tigmsg %B{33}tigs%b -vGghl\# %B{41}\<°feature-ID°\>
-        tigmsg %b{41}-v%f%b - verbose
-        tigmsg %b{41}-G%f%b - no cd, absolute paths
-        tigmsg %b{41}-s%f%b - select visually
-        tigmsg %b{41}-#%f%b - offset of the picked °feature° when multiple match
-        tigmsg %b{41}-l%f%b - show files in the °feature°
+    local nl=$'\n'
+    tigmsg %B{33}tigs%b -vGghl\# %B{41}\<°feature-ID°\>$nl\
+        %b{41}-v%f%b - verbose$nl\
+        %b{41}-G%f%b - no cd, absolute paths$nl\
+        %b{41}-s%f%b - select visually$nl\
+        %b{41}-#%f%b - offset of the picked °feature° when multiple match$nl\
+        %b{41}-l%f%b - show files in the °feature°$nl
     return 0
 fi
 
