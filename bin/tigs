@@ -25,6 +25,8 @@ builtin zparseopts -D -E -A Opts -- v G l 1 2 3 4 5 s || return 7
 # Get the query from filtered args
 local QR=$1
 
+util/ti::chkstr "$QR"||return 1
+
 # Read feature registry
 {reply=(${(f@)"$(<$TINFO)"});} TIO
 if ((!$#reply));then

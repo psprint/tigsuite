@@ -27,12 +27,12 @@ typeset -gA Plugins
 # and uses a verbatim `print` builtin otherwise.
 \tigmsg_()
 {
-    if [[ -x $TIG_SUITE_DIR/functions/zmsg ]]; then
+    if (($+functions[zmsg])); then
+        zmsg "$@"
+    elif [[ -x $TIG_SUITE_DIR/functions/zmsg ]]; then
         $TIG_SUITE_DIR/functions/zmsg "$@"
     elif (($+commands[zmsg])); then
         command zmsg "$@"
-    elif (($+functions[zmsg])); then
-        zmsg "$@"
     else
         builtin print -- ${@${@//(%f|%B|%F|%f)/}//\{[^\}]##\}/}
     fi
