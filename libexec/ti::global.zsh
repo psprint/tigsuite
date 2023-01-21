@@ -137,6 +137,8 @@ local -x PDIR=$REPLY PID=$REPLY:t:r
 local -x TIPID_QUEUE=$TICACHE/PID::${(U)PID}.queue
 local -x TIZERO_PAT='(#s)0#(#e)'
 
+util/ti::chkstr "$PDIR" "$PID" "$TIPID_QUEUE" "TIZERO_PAT"|return 1
+
 # Snippets with code
 for qe in $TIG/libexec/ti::*.zsh~*/ti::global.zsh(N.); do
     builtin source $qe
