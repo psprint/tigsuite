@@ -20,12 +20,12 @@ source "$0:h:h"/libexec/ti::global.zsh
 # -# offset of the picked °feature° when multiple match
 # -l show files in the °feature°
 local -A Opts
-builtin zparseopts -D -E -A Opts -- v G l 1 2 3 4 5 s || return 7
+builtin zparseopts -D -E -A Opts -- v G g l 1 2 3 4 5 s || return 7
 
 # Get the query from filtered args
 local QR=$1
 
-util/ti::chkstr "$QR"||return 1
+util/ti::chkstr $QR||return 1
 
 # Read feature registry
 {reply=(${(f@)"$(<$TINFO)"});} TIO
@@ -60,6 +60,15 @@ if ((!$#reply));then
 fi
 
 local PDIR=$match[2]
+
+if (($+Opts[-g]));then
+    local OUTPUT
+    tigmsg -h {33}Grep result %B{41}'|·|'=$#reply%b{33} \
+            for query: %B{41}/{135}$QR{41}/{33}:
+    printf -v OUTPUT {205}·{41}%s\\n ${(M)reply##$~FEATP}
+    tigmsg $OUTPUT
+    return
+fi
 
 # Support -# indice options
 if (($#reply>1&&!Opts[(i)-<->]));then

@@ -88,4 +88,4 @@ if [[ $q = (#b)[^$'\177']#$'\177'[^$'\1']#$'\1'([^$'\2']#)$'\2'(*) ]]; then
     [[ ! -f $tagfile && -f $match[2] ]] && tagfile=$match[2]
     util/ti::get-editor||return 1
     "$REPLY" +$tagline $tagfile
- fi
+fi
