@@ -6,7 +6,7 @@
 
 # Set options
 builtin emulate -L zsh -o extendedglob -o noshortloops -o warncreateglobal \
-                        -o typesetsilent
+                        -o typesetsilent -o rcquotes -o nopromptsubst
 
 # $0 support
 0="${${(M)${0::=${(%):-%x}}:#/*}:-$PWD/$0}"
@@ -20,7 +20,9 @@ source "$0:h:h"/libexec/ti::global.zsh
 # -# offset of the picked °feature° when multiple match
 # -l show files in the °feature°
 local -A Opts
-builtin zparseopts -D -E -A Opts -- v G g h -help l 1 2 3 4 5 s || return 7
+builtin zparseopts  ${${(M)ZSH_VERSION:#(5.[8-9]|6.[0-9])}:+-F} \
+                    -D -E -A Opts -- v G g \
+                    h -help l 1 2 3 4 5 s || return 7
 
 if (($+Opts[-h]||$+Opts[--help]));then
     local nl=$'\n'

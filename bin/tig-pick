@@ -15,6 +15,9 @@
 # $0 support
 0="${${(M)${0::=${(%):-%x}}:#/*}:-$PWD/$0}"
 
+builtin emulate -L zsh -o extendedglob -o warncreateglobal -o noshortloops \
+            -o nopromptsubst -o rcquotes -o typesetsilent
+
 set -e
 
 typeset -g CONFIG=$(mktemp)
@@ -37,7 +40,7 @@ printf %s\\n "bind pager <Enter> <zsh -c 'printf \$0 >&2' %(text)">>!$CONFIG
 printf %s\\n "source $TIG_SUITE_DIR/share/tig-pager.rc">>!$CONFIG
 
 # Read all from stdin → array
-local qi="$(<&0)"
+local qi="$(<&0)" stderr
 local -a qa=(${(f@)qi})
 
 # Run tig with the standard and error output channels swapped.
@@ -52,5 +55,5 @@ export TIGRC_USER=$CONFIG
 
 local qe=$(print "$stderr" | tail -n1)
 # Repair long lines
-qe=${${(M)qa:#$qe*}[1]}
+local qe=${${(M)qa:#$qe*}[1]}
 print -r -- "$qe"
