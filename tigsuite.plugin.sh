@@ -73,8 +73,8 @@ Provide it by setting ZERO to it.\\n"
     export TIORIG_RC TIGRC_USER=$TIG_SUITE_DIR/xtigrc
 
     # Create new config which includes old
-    printf "source $TIG_SUITE_DIR/tigrc\\n">$TIGRC_USER
-    [[ -f $TIORIG_RC ]]&&printf "source $TIORIG_RC\\n">>$TIGRC_USER
+    printf "source $TIG_SUITE_DIR/tigrc\\n">"$TIGRC_USER"
+    [[ -f $TIORIG_RC ]]&&printf "source $TIORIG_RC\\n">>"$TIGRC_USER"
 } && _ "$@"
 
 unset -f _ err_trap
