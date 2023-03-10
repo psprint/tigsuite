@@ -75,6 +75,7 @@ Provide it by setting ZERO to it.\\n"
     # Create new config which includes old
     printf "source $TIG_SUITE_DIR/tigrc\\n">"$TIGRC_USER"
     [[ -f $TIORIG_RC ]]&&printf "source $TIORIG_RC\\n">>"$TIGRC_USER"
+    [[ $PATH == *$TIG_SUITE_DIR*]]||PATH=$TIG_SUITE_DIR/bin:$PATH
 } && _ "$@"
 
 unset -f _ err_trap
