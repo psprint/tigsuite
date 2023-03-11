@@ -59,11 +59,12 @@ Provide it by setting ZERO to it.\\n"
 
     # Use config
     local qc qct=${XDG_CONFIG_HOME:-$HOME/.config}/tig/config
-    if [[ -n ${TIGRC_USER##$TIG_SUITE_DIR*} ]]; then
+    local qr=`readlink $TIGRC_USER`qsd=`readlink $TIG_SUITE_DIR`
+    if [[ -n ${qr##$qsd*} ]];then
         qc=$TIGRC_USER
-    elif [[ -f $qct  ]]; then
+    elif [[ -f $qct  ]];then
         qc=$qct
-    elif [[ -f ~/.tigrc ]]; then
+    elif [[ -f ~/.tigrc ]];then
         qc=$HOME/.tigrc
     fi
 

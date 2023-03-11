@@ -39,7 +39,7 @@ Plugins[TIG_DIR]="$0:h"
 
     # Use config
     local qc qct=${XDG_CONFIG_HOME:-$HOME/.config}/tig/config
-    if [[ -n ${TIGRC_USER##$TIG_SUITE_DIR*} ]];then
+    if [[ -n ${${TIGRC_USER:A}##${TIG_SUITE_DIR:A}*} ]];then
         qc=$TIGRC_USER
     elif [[ -f $qct  ]];then
         qc=$qct
